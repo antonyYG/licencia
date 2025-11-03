@@ -145,11 +145,3 @@
     }
 
  }
-
-//  $mail->isSMTP();
-//   $mail->Host       = 'smtp.gmail.com';
-//   $mail->SMTPAuth   = true;
-//   $mail->Username   = 'gerardoyupanqui18@gmail.com';
-//   $mail->Password   = 'pufzkyslkbvmsocq';
-//   $mail->SMTPSecure = 'tls';
-//   $mail->Port       = 587;
