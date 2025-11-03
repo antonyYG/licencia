@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Usuario Registrado</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .email-wrapper {
+            width: 100%;
+            padding: 20px 0;
+            background-color: #f0f2f5;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .email-header {
+            background-color: #4a90e2;
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .email-body {
+            padding: 25px 20px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .email-body p {
+            margin: 10px 0;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #4a90e2;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 20px 0;
+            background-color: #4a90e2;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .email-footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999999;
+            padding: 15px 20px;
+            border-top: 1px solid #eeeeee;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <div class="email-header">
+                Nuevo Usuario Registrado
+            </div>
+            <div class="email-body">
+                <p>Se ha registrado un nuevo usuario en el sistema:</p>
+                <p><span class="highlight">ID:</span> {{id}}</p>
+                <p><span class="highlight">Nombre:</span> {{nombre}}</p>
+                <p><span class="highlight">DNI:</span> {{dni}}</p>
+            </div>
+            <div class="email-footer">
+                &copy; 2025 Sistema. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
