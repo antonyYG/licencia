@@ -41,16 +41,18 @@
 
 				<div class="panel-body">
 					<div class="table-responsive">
-						<table id="tablatienda" class="table table-striped table-bordered" style="width:100%">
-							<thead>
-								<tr>
-									<th>N° Ruc</th>
-									<th>Nombres</th>
-									<th>Apellido Paterno</th>
-									<th>Apellido Materno</th>
-									<th style="color: green;">Actualizar</th>
-								</tr>
-							</thead>
+                        <table id="tablatienda" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>N° Ruc</th>
+                                    <!-- Nueva columna para mostrar el DNI -->
+                                    <th>DNI</th>
+                                    <th>Nombres</th>
+                                    <th>Apellido Paterno</th>
+                                    <th>Apellido Materno</th>
+                                    <th style="color: green;">Actualizar</th>
+                                </tr>
+                            </thead>
 							<tbody>
 							</tbody>
 						</table>
@@ -112,17 +114,22 @@
 				<!-- Mapa Leaflet -->
 				<div id="map" style="height: 300px; margin-bottom: 15px; border: 1px solid #ccc;"></div>
 				
-				<form id="formtienda">
-					<div class="form-row">
-						<div class="form-group col-md-6">
-							<label for="inputEmail4" style="color: black;">N° Ruc</label>
-							<input type="text" class="form-control" id="ruc" name="ruc" placeholder="Ingresar Ruc" onkeypress="return numeros(event)" maxlength="12">
-						</div>
-						<div class="form-group col-md-6">
-							<label for="inputPassword4" style="color: black;">Nombres</label>
-							<input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingresar Nombres" onkeypress="return soloLetras(event)">
-						</div>
-					</div>
+                <form id="formtienda">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="inputEmail4" style="color: black;">N° Ruc</label>
+                            <input type="text" class="form-control" id="ruc" name="ruc" placeholder="Ingresar Ruc" onkeypress="return numeros(event)" maxlength="11">
+                        </div>
+                        <!-- Nuevo campo DNI, colocado al lado de RUC -->
+                        <div class="form-group col-md-4">
+                            <label for="inputDni" style="color: black;">DNI</label>
+                            <input type="text" class="form-control" id="dni" name="dni" placeholder="Ingresar DNI" onkeypress="return numeros(event)" maxlength="8">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputPassword4" style="color: black;">Nombres</label>
+                            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingresar Nombres" onkeypress="return soloLetras(event)">
+                        </div>
+                    </div>
 					<div class="form-row">
 						<div class="form-group col-md-6">
 							<label for="inputEmail4" style="color: black;">Apellido Paterno</label>
@@ -225,11 +232,16 @@
                 <form id="formtiendaedita">
                     <div class="form-row">
                         <input type="hidden" name="idtienda" id="idtienda">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="inputEmail4" style="color: black;">N° Ruc</label>
-                            <input type="text" class="form-control" id="rucedit" name="ruc" placeholder="Ingresar Ruc" onkeypress="return numeros(event)">
+                            <input type="text" class="form-control" id="rucedit" name="ruc" placeholder="Ingresar Ruc" onkeypress="return numeros(event)" maxlength="11">
                         </div>
-                        <div class="form-group col-md-6">
+                        <!-- Nuevo campo DNI en edición -->
+                        <div class="form-group col-md-4">
+                            <label for="inputDniEdit" style="color: black;">DNI</label>
+                            <input type="text" class="form-control" id="dniedit" name="dni" placeholder="Ingresar DNI" onkeypress="return numeros(event)" maxlength="8">
+                        </div>
+                        <div class="form-group col-md-4">
                             <label for="inputPassword4" style="color: black;">Nombres</label>
                             <input type="text" class="form-control" id="nombresedit" name="nombres" placeholder="Ingresar Nombres" onkeypress="return soloLetras(event)">
                         </div>

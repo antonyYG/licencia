@@ -2,6 +2,8 @@ $(document).ready(function(){
 	$("#registrar").click(function(){
     var datos = $("#formtienda").serialize();
     var ruc = $("#ruc").val();
+    // Nuevo: obtener DNI del formulario
+    var dni = $("#dni").val();
     var nombres = $("#nombres").val();
     var apellidop = $("#apellidop").val();
     var apellidom = $("#apellidom").val();
@@ -21,6 +23,7 @@ $(document).ready(function(){
             datos += "&latitud=" + parseFloat(latitud) + "&longitud=" + parseFloat(longitud);
         }
         
+        // Enviamos también el DNI serializado en el formulario
         $.ajax({
             "url": "../controller/tienda.php?boton=insertar",
             "method": "post",
@@ -73,6 +76,8 @@ $(document).ready(function(){
             $("#longitudedit").val(parseFloat(rsp.longitud));
             $("#zonaedit").val(rsp.zona);
             $("#celularedit").val(rsp.celular);
+            // Nuevo: completar el DNI en la edición
+            $("#dniedit").val(rsp.dni);
         },
         error: function(xhr) {
             console.error("Error AJAX:", xhr.responseText);
@@ -124,16 +129,18 @@ function listartienda(){
 			"method":"post",
 			"dataType":"json"
 		},
-		"columns":[
-			{"data":"numruc"},
-			{"data":"nombres_per"},
-			{"data":"apellidop_per"},
-			{"data":"apellidom_per"},
-		
-			{"data":"edita"}
-			
-			
-		],
+        "columns":[
+            {"data":"numruc"},
+            // Nueva columna para mostrar el DNI
+            {"data":"dni"},
+            {"data":"nombres_per"},
+            {"data":"apellidop_per"},
+            {"data":"apellidom_per"},
+        
+            {"data":"edita"}
+            
+            
+        ],
 		"language":{
 			"url":"../public/datatables/js/espanol.js"
 		}
@@ -147,12 +154,14 @@ function abrirmodal(){
 
 
 function limpiar(){
-	$("#ruc").val('');
-	$("#nombres").val('');
-	$("#apellidop").val('');
-	$("#apellidom").val('');
-	$("#ubicacion").val('');
-	$("#area").val('');
+    $("#ruc").val('');
+    // Limpiar también DNI
+    $("#dni").val('');
+    $("#nombres").val('');
+    $("#apellidop").val('');
+    $("#apellidom").val('');
+    $("#ubicacion").val('');
+    $("#area").val('');
 	$("#latitud").val('');
 	$("#longitud").val('');
 	$("#zona").val('');
