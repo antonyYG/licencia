@@ -209,6 +209,12 @@
 			  </div>
 			  <div class="form-row">
 			    <div class="form-group col-md-6">
+			      <label for="inputEmail4" style="color: black;">Correo</label>
+			       <input type="email" class="form-control" id="correo" name="correo" placeholder="Ingresar Correo">
+			    </div>
+			  </div>
+			  <div class="form-row">
+			    <div class="form-group col-md-6">
 			      <label for="inputEmail4" style="color: black;">Contraseña</label>
 			      <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingresar la Contraseña">
 			    </div>
@@ -216,6 +222,13 @@
 			      <label for="inputEmail4" style="color: black;">Repite Contraseña</label>
 			      <input type="password" class="form-control" id="repitecontrasena" name="repitecontrasena" placeholder="Ingresar Nuevamente la Contraseña">
 			    </div>
+			    <div class="form-group col-md-6">
+					<label style="color: black;">Rol</label>
+					<select name="rol" id="rol" class="form-control">
+						<option value="Administrador">Administrador</option>
+						<option value="Usuario">Usuario</option>
+					</select>
+				</div>
 			  </div>
 			  <hr width="100%">
       <div class="modal-footer">
@@ -265,6 +278,20 @@
 			      <input type="text" class="form-control" id="dniedit" name="dni" placeholder="Ingresar dni" maxlength="8" onkeypress="return numeros(event)">
 			    </div>
 			  </div>
+			  <div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="correoedit" style="color: black;">Correo electrónico</label>
+						<input type="email" class="form-control" id="correoedit" name="correo" placeholder="Ingresar correo">
+					</div>
+					<div class="form-group col-md-6">
+						<label for="roledit" style="color: black;">Rol</label>
+						<select class="form-control" id="roledit" name="rol">
+						<option value="">Seleccione</option>
+						<option value="Administrador">Administrador</option>
+						<option value="Usuario">Usuario</option>
+						</select>
+					</div>
+				</div>
 			  <div class="form-row">
 			    <div class="form-group col-md-6">
 			      <label for="inputEmail4" style="color: black;">Contraseña</label>

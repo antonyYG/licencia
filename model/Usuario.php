@@ -14,10 +14,14 @@
  		return $sql;
  	}
 
- 	public function insertaruser($nombres,$apellidop,$apellidom,$direccion,$dni,$contrasena){
+ 	public function insertaruser($nombres,$apellidop,$apellidom,$direccion,$dni,$contrasena,$correo,$rol){
  		$con=parent::conectar();
+    $checkCorreo = mysqli_query($con, "SELECT idpersona FROM usuario WHERE correo = '$correo' LIMIT 1");
+    if (mysqli_num_rows($checkCorreo) > 0) {
+        return "correo_duplicado";
+    }
  		$incripta=password_hash($contrasena, PASSWORD_DEFAULT);
- 		$sql=mysqli_query($con, "INSERT INTO `usuario`(`nombres`, `apellidop`, `apellidom`, `direccion`, `dni`, `contrasena`) VALUES ('$nombres','$apellidop','$apellidom','$direccion','$dni','$incripta')");
+ 		$sql=mysqli_query($con, "INSERT INTO `usuario`(`nombres`, `apellidop`, `apellidom`, `direccion`, `dni`, `contrasena`,`tipo_usuario`,`correo`) VALUES ('$nombres','$apellidop','$apellidom','$direccion','$dni','$incripta','$rol','$correo')");
  		if ($sql) {
 			$usuario_id = mysqli_insert_id($con); // ID del usuario insertado
 
@@ -29,22 +33,43 @@
  		}
  	}
 
- 	public function editaruser($idusuario,$nombres,$apellidop,$apellidom,$direccion,$dni,$contrasena){
- 		$con=parent::conectar();
- 		if (empty($contrasena)) {
- 			$sql=mysqli_query($con, "UPDATE `usuario` SET `nombres`='$nombres',`apellidop`='$apellidop',`apellidom`='$apellidom',`direccion`='$direccion',`dni`='$dni' WHERE `idpersona`='$idusuario'");
- 		}else{
- 			$incripta=password_hash($contrasena, PASSWORD_DEFAULT);
- 			$sql=mysqli_query($con, "UPDATE `usuario` SET `nombres`='$nombres',`apellidop`='$apellidop',`apellidom`='$apellidom',`direccion`='$direccion',`dni`='$dni',`contrasena`='$incripta' WHERE `idpersona`='$idusuario'");
- 		}
- 		if ($sql) {
- 			return true;
- 		}else{
- 			return false;
- 		}
+  public function editaruser($idusuario, $nombres, $apellidop, $apellidom, $direccion, $dni, $contrasena, $correo, $rol)
+  {
+      $con = parent::conectar();
+      $validarCorreo = mysqli_query($con, "SELECT idpersona FROM usuario WHERE correo = '$correo' AND idpersona != '$idusuario'");
+      if (mysqli_num_rows($validarCorreo) > 0) {
+          return "correo_existente";
+      }
+      if (empty($contrasena)) {
+          $sql = mysqli_query($con, "UPDATE usuario 
+              SET nombres = '$nombres',
+                  apellidop = '$apellidop',
+                  apellidom = '$apellidom',
+                  direccion = '$direccion',
+                  dni = '$dni',
+                  correo = '$correo',
+                  tipo_usuario = '$rol'
+              WHERE idpersona = '$idusuario'");
+      } else {
+          $incripta = password_hash($contrasena, PASSWORD_DEFAULT);
+          $sql = mysqli_query($con, "UPDATE usuario 
+              SET nombres = '$nombres',
+                  apellidop = '$apellidop',
+                  apellidom = '$apellidom',
+                  direccion = '$direccion',
+                  dni = '$dni',
+                  correo = '$correo',
+                  tipo_usuario = '$rol',
+                  contrasena = '$incripta'
+              WHERE idpersona = '$idusuario'");
+      }
 
- 	}
-
+      if ($sql) {
+          return true;
+      } else {
+          return false;
+      }
+  }
  	public function activo($idusuario){
  		$con=parent::conectar();
  		$sql=mysqli_query($con, "update usuario set condicion=1 where idpersona='$idusuario'");
@@ -66,10 +91,14 @@
  	}
 
  	public function mostrarpersona($idusuario){
- 		$con=parent::conectar();
- 		$sql=mysqli_query($con, "SELECT `idpersona`, `nombres`, `apellidop`, `apellidom`, `direccion`, `dni` FROM `usuario` WHERE idpersona='$idusuario'");
- 		return $sql;
- 	}
+      $con = parent::conectar();
+      $sql = mysqli_query($con, "
+          SELECT idpersona, nombres, apellidop, apellidom, direccion, dni, correo, tipo_usuario
+          FROM usuario
+          WHERE idpersona = '$idusuario'
+      ");
+      return $sql;
+  }
 
    public function login($dni)
 	{
@@ -114,7 +143,8 @@
     }
 
 	 // Método privado para enviar correo
-    private function enviarCorreoAdmin($id, $nombres, $apellidop, $apellidom, $dni){
+    private function enviarCorreoAdmin($id, $nombres, $apellidop, $apellidom, $dni)
+    {
         $mail = new PHPMailer(true);
 
         try {
@@ -127,8 +157,23 @@
             $mail->Port       = 2525;
 
             $mail->setFrom('licencia@gmail.com', 'Sistema');
-            $mail->addAddress('antonypnq13@gmail.com', 'Administrador');
 
+            require_once __DIR__ . '/../config/conexion.php';
+            $con = new conexion();
+            $cnx = $con->conectar();
+
+            $sql = "SELECT correo FROM usuario WHERE tipo_usuario = 'Administrador'";
+            $result = mysqli_query($cnx, $sql);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    if (!empty($row['correo'])) {
+                        $mail->addBCC($row['correo']);
+                    }
+                }
+            } else {
+                return;
+            }
             $html = file_get_contents(__DIR__ . '/../view/email/Correo.html');
             $html = str_replace('{{id}}', $id, $html);
             $html = str_replace('{{nombre}}', "$nombres $apellidop $apellidom", $html);

@@ -8,6 +8,8 @@ $apellidop=isset($_POST['apellidop'])? limpiar($_POST['apellidop']): "";
 $apellidom=isset($_POST['apellidom'])? limpiar($_POST['apellidom']): "";
 $direccion=isset($_POST['direccion'])? limpiar($_POST['direccion']): "";
 $dni=isset($_POST['dni'])? limpiar($_POST['dni']): "";
+$rol=isset($_POST['rol'])? limpiar($_POST['rol']): "";
+$correo=isset($_POST['correo'])? limpiar($_POST['correo']): "";
 $contrasena=isset($_POST['contrasena'])? limpiar($_POST['contrasena']): "";
 $repitecontrasena=isset($_POST['repitecontrasena'])? limpiar($_POST['repitecontrasena']): "";
 
@@ -28,22 +30,34 @@ switch ($_GET['boton']) {
 		mysqli_free_result($lista);
 		break;
 	case 'insertar':
-		$inserta = $Usuario->insertaruser($nombres, $apellidop, $apellidom, $direccion, $dni, $contrasena);
-
-		if ($inserta) {
-			echo "1";
-		} else {
-			echo "0";
-		}
+		$inserta = $Usuario->insertaruser($nombres, $apellidop, $apellidom, $direccion, $dni, $contrasena, $correo, $rol);
+		if ($inserta === "correo_duplicado") {
+				echo "correo_duplicado";
+			} elseif ($inserta === "dni_duplicado") {
+				echo "dni_duplicado";
+			} elseif ($inserta === true) {
+				echo "1";
+			} else {
+				echo "0";
+			}
 		break;
 	case 'editar':
-		$edita=$Usuario->editaruser($idusuario,$nombres,$apellidop,$apellidom,$direccion,$dni,$contrasena);
-		if ($edita) {
-			echo "1";
-		}else{
-			echo "0";
-		}
-		break;
+    // Validar que no exista otro usuario con el mismo correo
+    $con = (new conexion())->conectar();
+    $verificaCorreo = mysqli_query($con, "SELECT idpersona FROM usuario WHERE correo='$correo' AND idpersona != '$idusuario'");
+    if (mysqli_num_rows($verificaCorreo) > 0) {
+        echo "correo_duplicado";
+        exit;
+    }
+
+    $edita = $Usuario->editaruser($idusuario, $nombres, $apellidop, $apellidom, $direccion, $dni, $contrasena, $correo, $rol);
+
+    if ($edita) {
+        echo "1";
+    } else {
+        echo "0";
+    }
+    break;
 	case 'activo':
 		$activo=$Usuario->activo($idusuario);
 		if ($activo) {
@@ -61,16 +75,20 @@ switch ($_GET['boton']) {
 		}
 		break;
 	case 'motrarpersona':
-		$mostrar=$Usuario->mostrarpersona($idusuario);
-		$data=array();
+		$mostrar = $Usuario->mostrarpersona($idusuario);
+		$data = array();
+
 		foreach ($mostrar as $row) {
-			$data['idusuario']=$row['idpersona'];
-			$data['nombres']=$row['nombres'];
-			$data['apellidop']=$row['apellidop'];
-			$data['apellidom']=$row['apellidom'];
-			$data['direccion']=$row['direccion'];
-			$data['dni']=$row['dni'];
+			$data['idusuario'] = $row['idpersona'];
+			$data['nombres'] = $row['nombres'];
+			$data['apellidop'] = $row['apellidop'];
+			$data['apellidom'] = $row['apellidom'];
+			$data['direccion'] = $row['direccion'];
+			$data['dni'] = $row['dni'];
+			$data['correo'] = $row['correo'];
+			$data['rol'] = $row['tipo_usuario'];
 		}
+
 		echo json_encode($data);
 		break;
 	case 'login':
