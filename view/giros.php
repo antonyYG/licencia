@@ -44,7 +44,6 @@
 				            <tr>
 				                <th>Giro</th>
 				                <th style="color: green;">Actualizar</th>
-				                <th style="color: red;">Eliminar</th>
 				            </tr>
 				        </thead>
 				        <tbody>
@@ -123,38 +122,13 @@
 		    <label for="exampleInputEmail1">Giro</label>
 		    <input type="text" class="form-control" id="nombregiroedit" name="nombregiro" aria-describedby="giro" placeholder="Ingresar Giro">
 		  </div>
-
+		
       <div class="modal-footer">
         <button type="button" class="btn btn-danger btn-raised" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary btn-raised" id="editar">Editar</button>
       </div>
       </form>
-     </div>
-    </div>
-  </div>
-</div>
-
-<!-- eliminar -->
-<div class="modal fade" id="modaleliminar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="background: red;">
-        <h4 class="modal-title" id="exampleModalLabel" align="center" style="color: white;">ELIMINAR GIRO</h4>
-      </div>
-      <div class="modal-body">
-
-      	<div class="col-md-4" style="text-align: center;">
-           <img src="../files/img/tramite.png" style="width: 120px;height: 120px">
-        </div>
-        <p style="color: red;">¿Esta seguro de eliminar este giro?</p>
-            <p>Recuerda que si eliminas este giro, se perderá permanentemente</p>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger btn-raised btn-sm" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success btn-raised btn-sm" id="eliminargiro">Eliminar</button>
-        <input type="hidden" name="idgiro" id="ideliminar">
-      </div>
+     </div> 
     </div>
   </div>
 </div>

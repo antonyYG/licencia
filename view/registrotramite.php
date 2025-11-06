@@ -52,16 +52,16 @@
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black;">Nombres</label>
 							<button type="button" class="btn btn-info btn-raised btn-sm" data-toggle="modal" data-target="#modallistar"><i class="zmdi zmdi-account"></i></button>
-							<input type="text" id="nombresLi" name="nombresLi" class="form-control">
+							<input type="text" id="nombresLi" name="nombresLi" class="form-control" readonly="readonly">
 							<input type="hidden" id="idtiendass" name="nombres" class="form-control" readonly="readonly">
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black;">Apellido Paterno</label>
-							<input type="text" class="form-control" id="apellidopli" name="apellidopli">
+							<input type="text" class="form-control" id="apellidopli" name="apellidopli" readonly="readonly">
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black;">Apellido Materno</label>
-							<input type="text" class="form-control" id="apellidomli" name="apellidomli">
+							<input type="text" class="form-control" id="apellidomli" name="apellidomli" readonly="readonly">
 						</div>
 					</div>
 					<hr width="100%" style="opacity: .1">
@@ -73,11 +73,11 @@
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black">Número de RUC</label>
-							<input type="text" id="numruc" name="numruc" class="form-control">
+							<input type="text" id="numruc" name="numruc" class="form-control" readonly="readonly"> 
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black">Establecimiento Ubicado en</label>
-							<input type="text" class="form-control" id="ubicacion" name="ubicacion">
+							<input type="text" class="form-control" id="ubicacion" name="ubicacion" readonly="readonly">
 						</div>
 					</div>
 					<div class="form-row">
@@ -102,7 +102,7 @@
 							<label for="validationTooltip05" style="color: black">N° Recibo Tesorería</label>
 							<input type="text" class="form-control" id="recibotes" name="recibotes" placeholder="Ingresar N° de recibo" onkeypress="return numeros(event)">
 						</div>
-
+						
 					</div>
 					<div class="form-row">
 						<div class="col-md-4 mb-3">

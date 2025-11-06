@@ -1,27 +1,34 @@
 $(document).ready(function(){
 	listar();
 	$("#guardar").click(function(){
-		var giro=$("#nombregiro").val();
-		if (giro.length==0) {
-			toastr.info("Ingresar el dato respectivo","Giro");
-		}else{
-			$.ajax({
-			"url":"../controller/giro.php?boton=insertar",
-			"method":"post",
-			"data":{nombregiro:giro}
-			}).done(function(rsp){
-				if (rsp=='1') {
-					toastr.success("Se registro exitosamente","Giro");
-					limpiar();
-					table.ajax.reload();
-					$("#exampleModal").modal("hide");
-				}else{
-					toastr.error("No se pudo registrar","Giro");
-				}
-			});
-		}
-		
-	});
+    var giro = $("#nombregiro").val().trim();
+
+    if (giro.length == 0) {
+        toastr.info("Ingresar el dato respectivo", "Giro");
+        return;
+    }
+
+    $.ajax({
+        url: "../controller/giro.php?boton=insertar",
+        method: "post",
+        data: { nombregiro: giro }
+    }).done(function(rsp) {
+        console.log("Respuesta servidor:", rsp); // <-- útil para debug
+        if (rsp === "1") {
+            toastr.success("Se registró exitosamente", "Giro");
+            limpiar();
+            table.ajax.reload();
+        } else if (rsp === "existe") {
+            toastr.warning("Ya existe un giro con ese nombre", "Giro duplicado");
+        } else {
+            toastr.error("No se pudo registrar", "Giro");
+        }
+    }).fail(function(xhr) {
+        console.error("Error AJAX:", xhr.responseText);
+        toastr.error("Error en el servidor", "Giro");
+    });
+});
+
 
 	$("#editar").click(function(){
 		var idgiro=$("#idgiroedit").val();
@@ -57,15 +64,13 @@ function listar(){
 		},
 		"columns":[
 			{"data":"nombregiro"},
-			{"defaultContent":'<button type="button" class="btn btn-primary btn-raised editar btn-sm"><i class="zmdi zmdi-edit"></i></button>'},
-			{"defaultContent":'<button type="button" class="btn btn-danger btn-raised eliminar btn-sm"><i class="zmdi zmdi-delete"></i></button>'}
+			{"defaultContent":'<button type="button" class="btn btn-primary btn-raised editar btn-sm"><i class="zmdi zmdi-edit"></i></button>'}
 		],
 		"language":{
 			"url":"../public/datatables/js/espanol.js"
 		}
 	});
 	obtener_datos("#giro tbody", table);
-	obtener_datos_eliminar("#giro tbody", table);
 }
 
 var obtener_datos=function(tbody, table){
@@ -81,25 +86,3 @@ var obtener_datos=function(tbody, table){
 function limpiar(){
 	giro=$("#nombregiro").val('');
 }
-
-var obtener_datos_eliminar=function(tbody, table){
-	$(tbody).on("click", ".eliminar", function(){
-		var data=table.row($(this).parents("tr")).data();
-		$("#ideliminar").val(data.idgiro);
-		$("#modaleliminar").modal({backdrop:'static', keyboard:false});
-		$("#modaleliminar").modal("show");
-	});
-}
-
-$(document).on("click", "#eliminargiro", function(){
-	var idgiro=$("#ideliminar").val();
-	$.post("../controller/giro.php?boton=eliminar", {idgiro:idgiro}, function(rsp){
-		if (rsp=="1") {
-			toastr.success("El giro se elimino correctamente","Giro");
-			$("#modaleliminar").modal("hide");
-			table.ajax.reload();
-		}else{
-			toastr.error("No se pudo eliminar","Giro");
-		}
-	});
-});

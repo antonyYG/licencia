@@ -21,10 +21,13 @@ switch ($_GET['boton']) {
 		mysqli_free_result($lista);
 		break;
 	case 'insertar':
-		$inserta=$giros->insertar($giro);
-		if ($inserta) {
+		$inserta = $giros->insertar($giro);
+
+		if ($inserta === "existe") {
+			echo "existe";
+		} elseif ($inserta === true) {
 			echo "1";
-		}else{
+		} else {
 			echo "0";
 		}
 		break;
@@ -36,15 +39,7 @@ switch ($_GET['boton']) {
 			echo "0";
 		}
 		break;
-	case 'eliminar':
-		$eliminar=$giros->eliminar($idgiro);
-		if ($eliminar) {
-			echo "1";
-		}else{
-			echo "0";
-		}
-		break;
 	default:
-
+		
 		break;
 }
