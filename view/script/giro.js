@@ -18,6 +18,7 @@ $(document).ready(function(){
             toastr.success("Se registró exitosamente", "Giro");
             limpiar();
             table.ajax.reload();
+            $("#exampleModal").modal("hide");
         } else if (rsp === "existe") {
             toastr.warning("Ya existe un giro con ese nombre", "Giro duplicado");
         } else {
@@ -64,7 +65,8 @@ function listar(){
 		},
 		"columns":[
 			{"data":"nombregiro"},
-			{"defaultContent":'<button type="button" class="btn btn-primary btn-raised editar btn-sm"><i class="zmdi zmdi-edit"></i></button>'}
+			{"defaultContent":'<button type="button" class="btn btn-primary btn-raised editar btn-sm"><i class="zmdi zmdi-edit"></i></button>'},
+			{"defaultContent":'<button type="button" class="btn btn-danger btn-raised eliminar btn-sm"><i class="zmdi zmdi-delete"></i></button>'}
 		],
 		"language":{
 			"url":"../public/datatables/js/espanol.js"
@@ -80,6 +82,34 @@ var obtener_datos=function(tbody, table){
 		$("#idgiroedit").val(data.idgiro);
 		$("#modaledita").modal({backdrop:'static', keyboard:false});
 		$("#modaledita").modal("show");
+	});
+
+	$(tbody).on("click", ".eliminar", function(){
+		var data=table.row($(this).parents("tr")).data();
+		var idgiro=data.idgiro;
+		swal({
+			title: "Estas seguro?",
+			text: "Una vez eliminado, no podras recuperar este giro!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		})
+		.then((willDelete) => {
+			if (willDelete) {
+				$.ajax({
+					url: "../controller/giro.php?boton=eliminar",
+					method: "post",
+					data: {idgiro:idgiro}
+				}).done(function(rsp){
+					if (rsp=='1') {
+						toastr.success("Se elimino correctamente","Giro");
+						table.ajax.reload();
+					}else{
+						toastr.error("no se pudo eliminar","Giro");
+					}
+				});
+			}
+		});
 	});
 }
 

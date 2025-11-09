@@ -24,5 +24,3 @@ NOTAS ADICIONALES:
 - Todos los cambios han sido implementados siguiendo las mejores prácticas de código y compatibilidad con el proyecto existente.
 - Se recomienda probar las funcionalidades en un entorno de desarrollo antes de desplegar en producción.
 - Para cualquier modificación adicional, consultar los archivos mencionados.
-
-Hola Mundo desde GitHub ####

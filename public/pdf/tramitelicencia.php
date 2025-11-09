@@ -10,6 +10,7 @@ if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
 
 require_once "fpdf/fpdf.php";
 require_once "../../config/conexion.php";
+require_once "../../public/phpqrcode/qrlib.php";
 
 $con = new conexion();
 $conexion = $con->conectar();
@@ -33,6 +34,20 @@ $resulta = mysqli_fetch_array($tramite);
 if (!$resulta) {
     die("No se encontró el trámite solicitado.");
 }
+
+// Generar contenido del QR dinámico
+$content = "Número de Expediente: " . $resulta['exp_num'] . "\n" .
+    "Otorgado a: " . $resulta['nombres_per'] . ' ' . $resulta['apellidop_per'] . ' ' . $resulta['apellidom_per'] . "\n" .
+    "Número de RUC: " . $resulta['numruc'] . "\n" .
+    "Establecimiento ubicado en: " . $resulta['ubic_tienda'] . "\n" .
+    "Giro o Comercio: " . $resulta['nombregiro'] . "\n" .
+    "Vigencia: " . ($resulta['vigencia_lic'] === "0001-01-01" ? "Indeterminado" : $resulta['vigencia_lic']) . "\n" .
+    "Estado: " . ($resulta['condicion'] == '1' ? 'Activo' : 'Anulado') . "\n" .
+    "Número de Resolución: " . $resulta['num_resolucion'] . "\n" .
+    "Número de Resolución ITSE: " . $resulta['NumResITSE'];
+
+$qrFile = '../../files/qr/temp_' . $resulta['exp_num'] . '.png';
+QRcode::png($content, $qrFile, QR_ECLEVEL_L, 10);
 
 function iso($texto) {
     return iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $texto);
@@ -167,8 +182,9 @@ $mes_en = $fecha->format('F');
 $fecha_actual_texto = 'Chilca, ' . $fecha->format('d') . ' de ' . $meses[$mes_en] . ' del ' . $fecha->format('Y');
 $pdf->Cell(52, 4, iso($fecha_actual_texto), 0, 0, 'L');
 
-// Código QR
-$pdf->Image('../../files/qr/' . $resulta['qr'], 162, 233, 32);
+// Código QR dinámico
+$pdf->Image($qrFile, 162, 233, 32);
+unlink($qrFile);
 
 $pdf->Output('I', 'Licencia.pdf');
 ob_end_flush();

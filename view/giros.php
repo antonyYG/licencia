@@ -44,6 +44,7 @@
 				            <tr>
 				                <th>Giro</th>
 				                <th style="color: green;">Actualizar</th>
+				                <th style="color: red;">Eliminar</th>
 				            </tr>
 				        </thead>
 				        <tbody>

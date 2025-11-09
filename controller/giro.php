@@ -39,7 +39,15 @@ switch ($_GET['boton']) {
 			echo "0";
 		}
 		break;
+	case 'eliminar':
+		$eliminar=$giros->eliminar($idgiro);
+		if ($eliminar) {
+			echo "1";
+		}else{
+			echo "0";
+		}
+		break;
 	default:
-		
+
 		break;
 }

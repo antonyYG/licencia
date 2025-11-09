@@ -52,16 +52,16 @@
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black;">Nombres</label>
 							<button type="button" class="btn btn-info btn-raised btn-sm" data-toggle="modal" data-target="#modallistar"><i class="zmdi zmdi-account"></i></button>
-							<input type="text" id="nombresLi" name="nombresLi" class="form-control" readonly="readonly">
+							<input type="text" id="nombresLi" name="nombresLi" class="form-control">
 							<input type="hidden" id="idtiendass" name="nombres" class="form-control" readonly="readonly">
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black;">Apellido Paterno</label>
-							<input type="text" class="form-control" id="apellidopli" name="apellidopli" readonly="readonly">
+							<input type="text" class="form-control" id="apellidopli" name="apellidopli">
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black;">Apellido Materno</label>
-							<input type="text" class="form-control" id="apellidomli" name="apellidomli" readonly="readonly">
+							<input type="text" class="form-control" id="apellidomli" name="apellidomli">
 						</div>
 					</div>
 					<hr width="100%" style="opacity: .1">
@@ -73,18 +73,18 @@
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black">Número de RUC</label>
-							<input type="text" id="numruc" name="numruc" class="form-control" readonly="readonly"> 
+							<input type="text" id="numruc" name="numruc" class="form-control">
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip02" style="color: black">Establecimiento Ubicado en</label>
-							<input type="text" class="form-control" id="ubicacion" name="ubicacion" readonly="readonly">
+							<input type="text" class="form-control" id="ubicacion" name="ubicacion">
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip03" style="color: black">Giro o Comercio</label>
 							<button type="button" class="btn btn-warning btn-raised btn-sm" data-toggle="modal" data-target="#modallistarcomercio"><i class="zmdi zmdi-account"></i></button>
-							<input type="text" name="nombregiros" id="idgirocomer" class="form-control" readonly="readonly">
+							<input type="text" name="nombregiros" id="idgirocomer" class="form-control">
 							<input type="hidden" name="giro" id="giro" class="form-control" readonly="readonly">
 						</div>
 						<div class="col-md-4 mb-3">
@@ -93,7 +93,7 @@
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip04" style="color: black">Área Comercial</label>
-							<input type="text" class="form-control" id="arealocal" name="arealocal" readonly="readonly">
+							<input type="text" class="form-control" id="arealocal" name="arealocal">
 						</div>
 					</div>
 					<hr width="100%" style="opacity: .1">
@@ -133,7 +133,7 @@
 					<div class="form-row">
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip03" style="color: black">N° Doc</label>
-							<input type="text" class="form-control" id="numdoc" name="numdoc" readonly="readonly">
+							<input type="text" class="form-control" id="numdoc" name="numdoc">
 						</div>
 					</div>
 					<hr width="100%" style="opacity: .1">

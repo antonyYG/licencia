@@ -36,7 +36,10 @@ $vigencia_itse      = isset($_POST['vigenciaitse']) ? limpiar($_POST['vigenciait
 switch ($_GET['boton']) {
     case 'listartienda':
         $lista = $Tramite->listartienda();
-        if (!$lista) die("error");
+        if (!$lista) {
+            echo json_encode(["error" => "No se pudo obtener la lista de tiendas"]);
+            exit;
+        }
         $arreglo = ["data" => []];
         while ($data = mysqli_fetch_assoc($lista)) {
             $data["selec"] = '<button type="button" class="btn btn-success btn-raised btn-sm seleccion"><i class="zmdi zmdi-check"></i></button>';
@@ -48,7 +51,10 @@ switch ($_GET['boton']) {
 
     case 'listartiendaedit':
         $lista = $Tramite->listartienda();
-        if (!$lista) die("error");
+        if (!$lista) {
+            echo json_encode(["error" => "No se pudo obtener la lista de tiendas"]);
+            exit;
+        }
         $arreglo = ["data" => []];
         while ($data = mysqli_fetch_assoc($lista)) {
             $data["selecedit"] = '<button type="button" class="btn btn-success btn-raised btn-sm seleccionedit"><i class="zmdi zmdi-check"></i></button>';

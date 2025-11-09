@@ -36,4 +36,14 @@ require_once "../config/conexion.php";
  			return false;
  		}
  	}
+
+ 	public function eliminar($idgiro){
+ 		$con=parent::conectar();
+ 		$sql=mysqli_query($con, "DELETE FROM giro WHERE idgiro='$idgiro'");
+ 		if ($sql) {
+ 			return true;
+ 		}else{
+ 			return false;
+ 		}
+ 	}
  }
