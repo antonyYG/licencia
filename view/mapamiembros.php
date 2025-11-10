@@ -22,13 +22,6 @@ $BASE_URL_RESOURCES = getBaseUrlPath($PROJECT_FOLDER_NAME);
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 
-    <script src="https://unpkg.com/esri-leaflet"></script>
-    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"/>
-    <script src="https://unpkg.com/esri-leaflet-geocoder"></script>
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.awesome-markers/dist/leaflet.awesome-markers.css"/>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js"></script>
 
@@ -69,7 +62,6 @@ $dbname = "licencia3";
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
 
-// Traemos tiendas con o sin licencia
 $sql = "
     SELECT 
         t.idtienda,
@@ -98,19 +90,27 @@ $conn->close();
 ?>
 
 <script>
-var mymap = L.map('map').setView([-12.062277, -75.287693], 15);
+
+// Coordenadas centrales de Chilca, Huancayo
+var CHILCA_CENTER = [-12.0886, -75.2109];
+
+// Crear mapa centrado en Chilca
+var mymap = L.map('map').setView(CHILCA_CENTER, 15);
+
+// Capa base de Google Streets
 var googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
     maxZoom: 20,
     subdomains:['mt0','mt1','mt2','mt3']
 });
 googleStreets.addTo(mymap);
 
+// Capa para las tiendas
 var tiendaLayer = L.layerGroup().addTo(mymap);
 
-// Los datos PHP convertidos a JSON seguro
+// Pasar datos desde PHP a JavaScript
 var tiendas = <?php echo json_encode($tiendas, JSON_UNESCAPED_UNICODE); ?>;
 
-// Recorremos todas las tiendas
+// Agregar marcadores
 tiendas.forEach(function(tienda) {
     var lat = parseFloat(tienda.latitud);
     var lon = parseFloat(tienda.longitud);

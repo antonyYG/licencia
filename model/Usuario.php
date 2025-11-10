@@ -149,13 +149,20 @@
 
         try {
             $mail->isSMTP();
-            $mail->Host       = 'sandbox.smtp.mailtrap.io';
+            $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'd53aa07c60c441';
-            $mail->Password   = '10020d1de49587';
+            $mail->Username   = 'gerardoyupanqui18@gmail.com';
+            $mail->Password   = 'pufzkyslkbvmsocq';
             $mail->SMTPSecure = 'tls';
-            $mail->Port       = 2525;
-
+            // $mail->Port       = 587;
+            // $mail->isSMTP();
+            // $mail->Host       = 'sandbox.smtp.mailtrap.io';
+            // $mail->SMTPAuth   = true;
+            // $mail->Username   = 'd53aa07c60c441';
+            // $mail->Password   = '10020d1de49587';
+            // $mail->SMTPSecure = 'tls';
+            // $mail->Port       = 2525;
+             
             $mail->setFrom('licencia@gmail.com', 'Sistema');
 
             require_once __DIR__ . '/../config/conexion.php';

@@ -325,14 +325,23 @@
     </div>
 </div>
 
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+    crossorigin=""></script>
+
 <script>
 // Variables globales para los mapas y marcadores
 let map, mapEdit;
 let marker, markerEdit;
 
-// Función para obtener dirección desde coordenadas (geocodificación inversa)
+const CHILCA_CENTER = [-12.0886, -75.2109];
+
+const CHILCA_BOUNDS = L.latLngBounds(
+    [-12.10, -75.23], // esquina suroeste
+    [-12.07, -75.19]  // esquina noreste
+);
 function obtenerDireccion(lat, lng, callback) {
-    // Usar el servicio de Nominatim (OpenStreetMap) para geocodificación inversa
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
         .then(response => response.json())
         .then(data => {
@@ -348,11 +357,8 @@ function obtenerDireccion(lat, lng, callback) {
         });
 }
 
-// Inicializar mapa cuando se abre el modal de inserción
 function abrirmodal() {
     $('#modalinsertar').modal('show');
-    
-    // Inicializar el mapa después de que el modal se muestre completamente
     setTimeout(function() {
         if (!map) {
             initMap();
@@ -362,133 +368,96 @@ function abrirmodal() {
     }, 500);
 }
 
-// Inicializar mapa principal
 function initMap() {
-    // Coordenadas de Chupaca, Perú como ubicación por defecto
-    const defaultLat = -12.0667;
-    const defaultLng = -75.2833;
-    
-    // Crear el mapa
-    map = L.map('map').setView([defaultLat, defaultLng], 13);
-    
-    // Agregar capa de tiles de OpenStreetMap
+    map = L.map('map', {
+        center: CHILCA_CENTER,
+        zoom: 15,
+        maxBounds: CHILCA_BOUNDS, 
+        maxBoundsViscosity: 1.0 
+    });
+
+    // Capa base de OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-    
-    // Agregar marcador inicial
-    marker = L.marker([defaultLat, defaultLng], {
-        draggable: true
-    }).addTo(map);
-    
-    // Función para actualizar coordenadas y dirección
+
+    // Marcador inicial en el centro
+    marker = L.marker(CHILCA_CENTER, { draggable: true }).addTo(map);
+
+    // Función interna para actualizar los campos
     function actualizarUbicacion(lat, lng) {
-        // Actualizar campos de coordenadas (con más decimales para precisión)
         document.getElementById('latitud').value = lat;
         document.getElementById('longitud').value = lng;
-        
-        // Obtener y actualizar dirección
         obtenerDireccion(lat, lng, function(direccion) {
             document.getElementById('ubicacion').value = direccion;
         });
     }
-    
-    // Actualizar al hacer clic en el mapa
+
+    // Click en el mapa → mueve marcador
     map.on('click', function(e) {
         const { lat, lng } = e.latlng;
-        
-        // Actualizar posición del marcador
         marker.setLatLng([lat, lng]);
-        
-        // Actualizar campos
         actualizarUbicacion(lat, lng);
     });
-    
-    // Actualizar al arrastrar el marcador
-    marker.on('dragend', function(e) {
+
+    // Arrastrar marcador → actualiza dirección
+    marker.on('dragend', function() {
         const { lat, lng } = marker.getLatLng();
         actualizarUbicacion(lat, lng);
     });
-    
-    // Establecer valores iniciales en los campos
-    actualizarUbicacion(defaultLat, defaultLng);
+
+    // Valores iniciales
+    actualizarUbicacion(CHILCA_CENTER[0], CHILCA_CENTER[1]);
 }
 
-// Inicializar mapa de edición cuando se abre el modal
 $('#modaleditar').on('shown.bs.modal', function() {
-    // Obtener valores actuales de latitud y longitud desde los campos del formulario
-    let currentLat = document.getElementById('latitudedit').value;
-    let currentLng = document.getElementById('longitudedit').value;
-    
-    // Si no hay valores o son inválidos, usar Chupaca como predeterminado
-    if (!currentLat || !currentLng || isNaN(parseFloat(currentLat)) || isNaN(parseFloat(currentLng))) {
-        currentLat = -12.0667;
-        currentLng = -75.2833;
-    } else {
-        currentLat = parseFloat(currentLat);
-        currentLng = parseFloat(currentLng);
-    }
-    
-    // Crear o actualizar el mapa de edición
+    let currentLat = parseFloat(document.getElementById('latitudedit').value) || CHILCA_CENTER[0];
+    let currentLng = parseFloat(document.getElementById('longitudedit').value) || CHILCA_CENTER[1];
+
     if (!mapEdit) {
-        mapEdit = L.map('map-edit').setView([currentLat, currentLng], 13);
-        
-        // Agregar capa de tiles de OpenStreetMap
+        mapEdit = L.map('map-edit', {
+            center: [currentLat, currentLng],
+            zoom: 15,
+            maxBounds: CHILCA_BOUNDS,
+            maxBoundsViscosity: 1.0
+        });
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(mapEdit);
-        
-        // Agregar marcador inicial
-        markerEdit = L.marker([currentLat, currentLng], {
-            draggable: true
-        }).addTo(mapEdit);
-        
-        // Función para actualizar coordenadas y dirección en edición
+
+        markerEdit = L.marker([currentLat, currentLng], { draggable: true }).addTo(mapEdit);
+
         function actualizarUbicacionEdit(lat, lng) {
-            // Actualizar campos de coordenadas
             document.getElementById('latitudedit').value = lat;
             document.getElementById('longitudedit').value = lng;
-            
-            // Obtener y actualizar dirección
             obtenerDireccion(lat, lng, function(direccion) {
                 document.getElementById('ubicacionedit').value = direccion;
             });
         }
-        
-        // Actualizar al hacer clic en el mapa
+
         mapEdit.on('click', function(e) {
             const { lat, lng } = e.latlng;
-            
-            // Actualizar posición del marcador
             markerEdit.setLatLng([lat, lng]);
-            
-            // Actualizar campos
             actualizarUbicacionEdit(lat, lng);
         });
-        
-        // Actualizar al arrastrar el marcador
-        markerEdit.on('dragend', function(e) {
+
+        markerEdit.on('dragend', function() {
             const { lat, lng } = markerEdit.getLatLng();
             actualizarUbicacionEdit(lat, lng);
         });
-        
-        // Actualizar dirección inicial
+
         actualizarUbicacionEdit(currentLat, currentLng);
-        
     } else {
-        // Actualizar posición del marcador y vista del mapa
         markerEdit.setLatLng([currentLat, currentLng]);
-        mapEdit.setView([currentLat, currentLng], 13);
+        mapEdit.setView([currentLat, currentLng], 15);
         mapEdit.invalidateSize();
-        
-        // Actualizar dirección
         obtenerDireccion(currentLat, currentLng, function(direccion) {
             document.getElementById('ubicacionedit').value = direccion;
         });
     }
 });
 
-// Limpiar mapas cuando se cierran los modales
 $('#modalinsertar').on('hidden.bs.modal', function() {
     if (map) {
         map.remove();
