@@ -26,7 +26,7 @@
 			$usuario_id = mysqli_insert_id($con); // ID del usuario insertado
 
             // Enviar correo al administrador
-            $this->enviarCorreoAdmin($usuario_id, $nombres, $apellidop, $apellidom, $dni);
+            $this->enviarCorreoUsuario($correo, $nombres, $apellidop, $apellidom, $dni);
  			return true;
  		}else{
  			return false;
@@ -143,51 +143,33 @@
     }
 
 	 // Método privado para enviar correo
-    private function enviarCorreoAdmin($id, $nombres, $apellidop, $apellidom, $dni)
+    private function enviarCorreoUsuario($correo, $nombres, $apellidop, $apellidom, $dni)
     {
         $mail = new PHPMailer(true);
 
         try {
             $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
+            $mail->Host       = 'sandbox.smtp.mailtrap.io';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'gerardoyupanqui18@gmail.com';
-            $mail->Password   = 'pufzkyslkbvmsocq';
+            $mail->Username   = 'd53aa07c60c441';
+            $mail->Password   = '10020d1de49587';
             $mail->SMTPSecure = 'tls';
-            // $mail->Port       = 587;
-            // $mail->isSMTP();
-            // $mail->Host       = 'sandbox.smtp.mailtrap.io';
-            // $mail->SMTPAuth   = true;
-            // $mail->Username   = 'd53aa07c60c441';
-            // $mail->Password   = '10020d1de49587';
-            // $mail->SMTPSecure = 'tls';
-            // $mail->Port       = 2525;
-             
-            $mail->setFrom('licencia@gmail.com', 'Sistema');
+            $mail->Port       = 2525;
 
-            require_once __DIR__ . '/../config/conexion.php';
-            $con = new conexion();
-            $cnx = $con->conectar();
+            // Remitente
+            $mail->setFrom('licencia@gmail.com', 'Sistema de Licencias');
 
-            $sql = "SELECT correo FROM usuario WHERE tipo_usuario = 'Administrador'";
-            $result = mysqli_query($cnx, $sql);
+            // Destinatario: el usuario registrado
+            $mail->addAddress($correo, "$nombres $apellidop $apellidom");
 
-            if ($result && mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    if (!empty($row['correo'])) {
-                        $mail->addBCC($row['correo']);
-                    }
-                }
-            } else {
-                return;
-            }
+            // Cargar la plantilla HTML
             $html = file_get_contents(__DIR__ . '/../view/email/Correo.html');
-            $html = str_replace('{{id}}', $id, $html);
             $html = str_replace('{{nombre}}', "$nombres $apellidop $apellidom", $html);
             $html = str_replace('{{dni}}', $dni, $html);
 
+            // Configurar contenido del correo
             $mail->isHTML(true);
-            $mail->Subject = 'Nuevo usuario registrado';
+            $mail->Subject = 'Registro exitoso en el sistema';
             $mail->Body    = $html;
 
             $mail->send();
