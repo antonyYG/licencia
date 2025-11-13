@@ -39,12 +39,14 @@
 					<table id="tablatiendausuario" class="table table-striped table-bordered" style="width:100%">
 				        <thead>
 				            <tr>
-				                <th>Nombres</th>
-												<th>Apellido Paterno</th>
-												<th>Apellido Materno</th>
-												<th>Dni</th>
-												<th style="color: green;">Actualizar</th>
-												<th style="color: purple;">Condicion</th>
+                <th>Nombres</th>
+                                                <th>Apellido Paterno</th>
+                                                <th>Apellido Materno</th>
+                                                <th>Correo</th>
+                                                <th>Rol</th>
+                                                <th>Dni</th>
+                                                <th style="color: green;">Actualizar</th>
+                                                <th style="color: purple;">Condicion</th>
 				            </tr>
 				        </thead>
 				        <tbody>
@@ -191,28 +193,35 @@
 			      <input type="text" class="form-control" id="apellidop" name="apellidop" placeholder="Ingresar el Apellido Paterno" onkeypress="return soloLetras(event)">
 			    </div>
 			  </div>
-			  <div class="form-row">
-			    <div class="form-group col-md-6">
-			      <label for="inputEmail4" style="color: black;">Apellido Materno</label>
-			      <input type="text" class="form-control" id="apellidom" name="apellidom" placeholder="Ingresar Apellido Materno" onkeypress="return soloLetras(event)">
-			    </div>	
-			  </div>
-			  <div class="form-row">
-			    <div class="form-group col-md-6">
-			      <label for="inputEmail4" style="color: black;">Direccion</label>
-			       <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingresar Direccion">
-			    </div>
-			    <div class="form-group col-md-6">
-			      <label for="inputPassword4" style="color: black;">Dni</label>
-			      <input type="text" class="form-control" id="dni" name="dni" placeholder="Ingresar dni" maxlength="8" onkeypress="return numeros(event)">
-			    </div>
-			  </div>
-			  <div class="form-row">
-			    <div class="form-group col-md-6">
-			      <label for="inputEmail4" style="color: black;">Correo</label>
-			       <input type="email" class="form-control" id="correo" name="correo" placeholder="Ingresar Correo">
-			    </div>
-			  </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4" style="color: black;">Apellido Materno</label>
+                  <input type="text" class="form-control" id="apellidom" name="apellidom" placeholder="Ingresar Apellido Materno" onkeypress="return soloLetras(event)">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4" style="color: black;">Correo</label>
+                  <input type="email" class="form-control" id="correo" name="correo" placeholder="Ingresar Correo">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4" style="color: black;">Direccion</label>
+                   <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingresar Direccion">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="inputPassword4" style="color: black;">Dni</label>
+                  <input type="text" class="form-control" id="dni" name="dni" placeholder="Ingresar dni" maxlength="8" onkeypress="return numeros(event)">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4" style="color: black;">Rol</label>
+                  <select class="form-control" id="tipo_usuario" name="tipo_usuario">
+                    <option value="Administrador">Administrador</option>
+                    <option value="Usuario">Usuario</option>
+                  </select>
+                </div>
+              </div>
 			  <div class="form-row">
 			    <div class="form-group col-md-6">
 			      <label for="inputEmail4" style="color: black;">Contraseña</label>
@@ -222,13 +231,6 @@
 			      <label for="inputEmail4" style="color: black;">Repite Contraseña</label>
 			      <input type="password" class="form-control" id="repitecontrasena" name="repitecontrasena" placeholder="Ingresar Nuevamente la Contraseña">
 			    </div>
-			    <div class="form-group col-md-6">
-					<label style="color: black;">Rol</label>
-					<select name="rol" id="rol" class="form-control">
-						<option value="Administrador">Administrador</option>
-						<option value="Usuario">Usuario</option>
-					</select>
-				</div>
 			  </div>
 			  <hr width="100%">
       <div class="modal-footer">
@@ -262,36 +264,35 @@
 			      <input type="text" class="form-control" id="apellidopedit" name="apellidop" placeholder="Ingresar el Apellido Paterno" onkeypress="return soloLetras(event)">
 			    </div>
 			  </div>
-			  <div class="form-row">
-			    <div class="form-group col-md-6">
-			      <label for="inputEmail4" style="color: black;">Apellido Materno</label>
-			      <input type="text" class="form-control" id="apellidomedit" name="apellidom" placeholder="Ingresar Apellido Materno" onkeypress="return soloLetras(event)">
-			    </div>	
-			  </div>
-			  <div class="form-row">
-			    <div class="form-group col-md-6">
-			      <label for="inputEmail4" style="color: black;">Direccion</label>
-			       <input type="text" class="form-control" id="direccionedit" name="direccion" placeholder="Ingresar Direccion">
-			    </div>
-			    <div class="form-group col-md-6">
-			      <label for="inputPassword4" style="color: black;">Dni</label>
-			      <input type="text" class="form-control" id="dniedit" name="dni" placeholder="Ingresar dni" maxlength="8" onkeypress="return numeros(event)">
-			    </div>
-			  </div>
-			  <div class="form-row">
-					<div class="form-group col-md-6">
-						<label for="correoedit" style="color: black;">Correo electrónico</label>
-						<input type="email" class="form-control" id="correoedit" name="correo" placeholder="Ingresar correo">
-					</div>
-					<div class="form-group col-md-6">
-						<label for="roledit" style="color: black;">Rol</label>
-						<select class="form-control" id="roledit" name="rol">
-						<option value="">Seleccione</option>
-						<option value="Administrador">Administrador</option>
-						<option value="Usuario">Usuario</option>
-						</select>
-					</div>
-				</div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4" style="color: black;">Apellido Materno</label>
+                  <input type="text" class="form-control" id="apellidomedit" name="apellidom" placeholder="Ingresar Apellido Materno" onkeypress="return soloLetras(event)">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4" style="color: black;">Correo</label>
+                  <input type="email" class="form-control" id="correoedit" name="correo" placeholder="Ingresar Correo">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4" style="color: black;">Direccion</label>
+                   <input type="text" class="form-control" id="direccionedit" name="direccion" placeholder="Ingresar Direccion">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="inputPassword4" style="color: black;">Dni</label>
+                  <input type="text" class="form-control" id="dniedit" name="dni" placeholder="Ingresar dni" maxlength="8" onkeypress="return numeros(event)">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputEmail4" style="color: black;">Rol</label>
+                  <select class="form-control" id="tipo_usuarioedit" name="tipo_usuario">
+                    <option value="Administrador">Administrador</option>
+                    <option value="Usuario">Usuario</option>
+                  </select>
+                </div>
+              </div>
 			  <div class="form-row">
 			    <div class="form-group col-md-6">
 			      <label for="inputEmail4" style="color: black;">Contraseña</label>

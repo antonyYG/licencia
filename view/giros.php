@@ -1,4 +1,4 @@
-<?php 
+ñ<?php 
 	session_start();
  ?>
 <!DOCTYPE html>
@@ -40,16 +40,16 @@
 			<div class="panel-body">
 				<div class="table-responsive">
 					<table id="giro" class="table table-striped table-bordered" style="width:100%">
-				        <thead>
-				            <tr>
-				                <th>Giro</th>
-				                <th style="color: green;">Actualizar</th>
-				                <th style="color: red;">Eliminar</th>
-				            </tr>
-				        </thead>
-				        <tbody>
-				        </tbody>
-				    </table>
+			        <thead>
+			            <tr>
+			                <th>Giro</th>
+			                <th style="color: green;">Actualizar</th>
+			                <th style="color: red;">Eliminar</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			        </tbody>
+			    </table>
 				</div>
 			</div>
 		</div>

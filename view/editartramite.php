@@ -109,10 +109,11 @@
 						<label for="validationTooltip03" style="color: black">Tipo de Anuncio</label>
 						<input type="text" class="form-control" id="fechexpedicionedit" name="fechexpedicion" value="<?php echo $row['fecha_expedicion']; ?>">
 					</div>
-					<div class="col-md-4 mb-3">
-						<label for="validationTooltip04" style="color: black">N° de Resolucion</label>
-						<input type="text" class="form-control" id="numresolucionedit" name="numresolucion" placeholder="Ingresar N° de Resolucion" value="<?php echo $row['num_resolucion']; ?>" onkeypress="return numeros(event)" maxlength="6">
-					</div>
+                    <div class="col-md-4 mb-3">
+                        <label for="validationTooltip04" style="color: black">N° de Resolución</label>
+                        <input type="text" class="form-control" id="numresolucionedit" name="numresolucion" placeholder="Solo números. Se autocompletará con: -2025-GDET-MPCH" value="<?php echo $row['num_resolucion']; ?>" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
+                        <small class="form-text text-muted">Se autocompletará con: -2025-GDET-MPCH</small>
+                    </div>
 					<div class="col-md-4 mb-3">
 						<label for="validationTooltip04" style="color: black">Estado de licencia</label>
 						<select name="estado" id="estado" class="form-control">
@@ -137,7 +138,8 @@
             <div class="form-row">
                 <div class="col-md-4 mb-3">
                     <label for="validationTooltip03" style="color: black">Número Resolución ITSE</label>
-                    <input type="text" class="form-control" id="numresolucion_itse" name="numresolucion_itse" placeholder="Ingresar N° de Resolución ITSE" value="<?php echo $row['NumResITSE']; ?>" onkeypress="return numeros(event)" maxlength="6">
+                    <input type="text" class="form-control" id="numresolucion_itse" name="numresolucion_itse" placeholder="Solo números. Se autocompletará con: -2025-GDE-ODC-MPCH" value="<?php echo $row['NumResITSE']; ?>" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
+                    <small class="form-text text-muted">Se autocompletará con: -2025-GDE-ODC-MPCH</small>
                 </div>
                 <div class="form-row">
                 <div class="col-md-4 mb-3">

@@ -83,7 +83,7 @@ switch ($_GET['boton']) {
     
 // V E R I F I C A C I Ó N   C O R R E G I D A
 // Soluciona el Warning: Undefined array key "estadoitse"
-if (isset($lista['EstadoITSE']) && $lista['EstadoITSE'] == '1') {
+if (isset($lista['estadoitse']) && $lista['estadoitse'] == '1') {
     $lis .= 'activo';
 } else {
     // Si no existe la clave O si existe pero no es '1' (es '0' o cualquier otro valor)

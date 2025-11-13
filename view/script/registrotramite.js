@@ -5,9 +5,48 @@ $(document).ready(function(){
 	listargiross();
 	listargirossComer();
 
+	// Generar Exp. N° automáticamente si está vacío (formato: EXP-YYYY-YYYYMMDDHHmmss)
+	(function autoGenExpediente(){
+		var $exp = $("#expediente");
+		if ($exp.length && !$exp.val()){
+			var now = new Date();
+			var yyyy = now.getFullYear();
+			var pad = n => (""+n).padStart(2,"0");
+			var stamp = `${yyyy}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+			$exp.val(`EXP-${yyyy}-${stamp}`);
+		}
+	})();
+
+	// Helpers de concatenación y validación
+    // Sufijos solo se aplican en el reporte; aquí validamos números
+	function onlyDigits(str){ return str.replace(/\D+/g,''); }
+	function isDigits(str){ return /^\d+$/.test(str); }
+	function isAfter(dateA, dateB){
+		var a = new Date(dateA);
+		var b = new Date(dateB);
+		return a instanceof Date && !isNaN(a) && b instanceof Date && !isNaN(b) && a.getTime() > b.getTime();
+	}
+
+    // Enforce numérico en campos correspondientes
+    $("#recibotes").on("input", function(){ this.value = onlyDigits(this.value); });
+    $("#numresolucion").on("input", function(){ this.value = onlyDigits(this.value); });
+    $("#numresolucion_itse").on("input", function(){ this.value = onlyDigits(this.value); });
+
+	// Comportamiento de Tipo de Licencia: Indeterminada vs Temporal
+	$("#tipolicencia").on("change", function(){
+		var tipo = $(this).val();
+		var $vig = $("#vigencia");
+		if (tipo === "1"){
+			$vig.val("");
+			$vig.prop("disabled", true);
+		}else{
+			$vig.prop("disabled", false);
+		}
+	});
+
 	$("#btn_registrar").click(function(e){
 	e.preventDefault();
-	var datos = $("#form_parttramite").serialize();
+	// NOTA: serializaré después de preparar los valores finales
 	var nombrecomercial = $("#nombrecomercial").val();
 	var giro = $("#giro").val();
 	var recibotes = $("#recibotes").val();
@@ -16,10 +55,39 @@ $(document).ready(function(){
 	var fechexpedicion = $("#fechexpedicion").val();
 	var expediente = $("#expediente").val();
 	var numresolucion = $("#numresolucion").val();
+	var idtienda = $("#idtiendass").val();
+	var numdocval = $("#numdoc").val();
 	var numresolucion_itse = $("#numresolucion_itse").val(); // Nuevo campo agregado
 	var expedicion_itse = $("#expedicionitse").val(); // Nuevo campo agregado
 	var vigencia_itse = $("#vigenciaitse").val(); // Nuevo campo agregado
 	var tipolicencia = document.getElementById('tipolicencia');
+
+    // Validaciones estrictas: solo dígitos
+    if (recibotes && !isDigits(recibotes)) { return toastr.error("N° recibo Tesorería debe ser numérico","Licencia"); }
+    if (numresolucion && !isDigits(numresolucion)) { return toastr.error("N° resolución debe ser numérico","Licencia"); }
+    if (numresolucion_itse && !isDigits(numresolucion_itse)) { return toastr.error("N° resolución ITSE debe ser numérico","Licencia"); }
+
+	// Validación de fechas ITSE: vigencia posterior a expedición
+	if (expedicion_itse && vigencia_itse && !isAfter(vigencia_itse, expedicion_itse)){
+		return toastr.error("Vigencia ITSE debe ser posterior a Expedición ITSE","Licencia");
+	}
+
+	// Reglas de tipo de licencia
+	var tipoLicVal = tipolicencia.value;
+    if (tipoLicVal === "2"){
+        // Temporal: vigencia requerida
+        if (!vigencia || vigencia.length === 0){
+            return toastr.info("Vigencia es requerida para licencia Temporal","Licencia");
+        }
+    }
+
+	// Validaciones adicionales obligatorias
+	if (!idtienda || idtienda.length === 0){
+		return toastr.info("Seleccione una tienda para el tramitante","Licencia");
+	}
+	if (!numdocval || numdocval.length === 0){
+		return toastr.info("El N° Doc debe generarse al elegir tipo de licencia","Licencia");
+	}
 	if (
 		nombrecomercial.length == 0 ||
 		giro.length == 0 ||
@@ -35,35 +103,61 @@ $(document).ready(function(){
 		toastr.info("Ingresar los datos respectivos","Licencia");
 	} else if (tipolicencia.value == 0 || tipolicencia.value == "") {
 		toastr.info("Seleccionar el tipo de Licencia","Licencia");
-	} else {
+    } else {
+        // Serializar datos exactamente como se ingresan
+        var datos = $("#form_parttramite").serialize();
+
 		$.ajax({
 				"url": "../controller/registrotramite.php?boton=insertar",
 				"method": "post",
 				"data": datos
 			})
 			.done(function(data) {
-				if (data == "1") {
-					swal({
-						title: 'Se registro exitosamente!',
-						text: "¿Se esta generando su Tramite de Licencia",
-						type: 'success',
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: 'Generar Licencia',
-						allowOutsideClick: false
-					}).then(function() {
-						window.open("../public/pdf/tramitelicencia.php?idtramite=" + expediente, '_blank');
-						location.href = "tramite.php";
-					});
-					$("#form_parttramite").trigger('reset');
+				var raw = (typeof data === 'string') ? data : (data && data.toString ? data.toString() : '');
+				var resp = (raw || '').trim();
+				if (resp === "1") {
+						swal({
+							title: 'Se registro exitosamente!',
+							text: "¿Se esta generando su Tramite de Licencia",
+							type: 'success',
+							confirmButtonColor: '#3085d6',
+							confirmButtonText: 'Generar Licencia',
+							allowOutsideClick: false
+						}).then(function() {
+							window.open("../public/pdf/tramitelicencia.php?idtramite=" + expediente, '_blank');
+							location.href = "tramite.php";
+						});
+						$("#form_parttramite").trigger('reset');
 				} else {
-					toastr.error("No se pudo registrar","Licencia");
+					var msg = "No se pudo registrar";
+					var idx = resp.indexOf('0|');
+					if (idx >= 0) {
+						msg = resp.substring(idx + 2).trim() || msg;
+					} else if (resp && resp !== '0') {
+						// Si el servidor retornó un texto distinto a 1/0, mostrarlo directamente
+						msg = resp;
+					}
+					console.error('Registro error:', resp);
+					toastr.error(msg, "Licencia");
 				}
+			})
+			.fail(function(jqXHR, textStatus, errorThrown){
+				console.error('AJAX fail:', textStatus, errorThrown, jqXHR && jqXHR.responseText);
+				toastr.error('Error de red: ' + textStatus, 'Licencia');
 			});
-	}
+    }
 });
 
 $("#btn_editar").click(function() {
-	var datos = $("#form_parttramiteedit").serialize();
+    // Validación estricta en edición
+    var resolEdit = $("#numresolucionedit").val();
+    var resolITSEEdit = $("#numresolucion_itse").val();
+    var reciboEdit = $("#recibotesedit").val();
+    if (reciboEdit && !isDigits(reciboEdit)) { return toastr.error("N° recibo Tesorería debe ser numérico","Licencia"); }
+    if (resolEdit && !isDigits(resolEdit)) { return toastr.error("N° resolución debe ser numérico","Licencia"); }
+    if (resolITSEEdit && !isDigits(resolITSEEdit)) { return toastr.error("N° resolución ITSE debe ser numérico","Licencia"); }
+
+    var datos = $("#form_parttramiteedit").serialize();
 	$.ajax({
 		"url": "../controller/registrotramite.php?boton=editar",
 		"method": "post",
@@ -74,7 +168,11 @@ $("#btn_editar").click(function() {
 			toastr.success("Se actualizó correctamente", "Licencia");
 			setTimeout('location.href="tramite.php"', 500);
 		} else {
-			toastr.error("No se pudo actualizar", "Licencia");
+			var msg = "No se pudo actualizar";
+			if (typeof data === 'string' && data.indexOf('0|') === 0) {
+				msg = data.substring(2);
+			}
+			toastr.error(msg, "Licencia");
 		}
 	});
 });
@@ -87,10 +185,10 @@ $("#btn_editar").click(function() {
 			$("#numdoc").val('');
 		}else{
 			$.post('../controller/registrotramite.php?boton=seleccion',{tipo:tipo}, function(data){
-			data=JSON.parse(data);
-			$("#numdoc").val(data.tipoli);
-		});
-	   }	
+				data=JSON.parse(data);
+				$("#numdoc").val(data.tipoli);
+			});
+		}	
 	});
 
 });	

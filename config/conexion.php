@@ -22,7 +22,7 @@ class conexion
 		return $conexion;
 	}
 	
-} #hoa
+}
 
 	function limpiar($str){
 		$con=new conexion;
