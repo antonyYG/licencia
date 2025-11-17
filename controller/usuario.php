@@ -30,7 +30,16 @@ switch ($_GET['boton']) {
 		mysqli_free_result($lista);
 		break;
 	case 'insertar':
-		$inserta=$Usuario->insertaruser($nombres,$apellidop,$apellidom,$direccion,$dni,$correo,$contrasena,$tipoUsuario);
+		$inserta = $Usuario->insertaruser(
+			$nombres,
+			$apellidop,
+			$apellidom,
+			$direccion,
+			$dni,
+			$contrasena,
+			$correo,
+			$tipoUsuario
+		);
 		if ($inserta) {
 			echo "1";
 		}else{
