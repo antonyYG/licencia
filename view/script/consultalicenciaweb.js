@@ -10,11 +10,13 @@ $(document).ready(function(){
 			"method":"post",
 			"data":{idtramite:idtramite}
 			}).done(function(r){
-				$("#expediente").html(r);
+				$("#expediente tbody").html(r);
 			});
-		}	
+		}
 	});
-		
+
+
+
 });
 
 

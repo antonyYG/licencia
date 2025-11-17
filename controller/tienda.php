@@ -26,6 +26,7 @@ switch ($_GET['boton']) {
             $arreglo = array("data" => []);
             while ($data = mysqli_fetch_assoc($lista)) {
                 $data['edita'] = '<button data-id="'.$data['idtienda'].'" type="button" class="btn btn-primary btn-raised btn-sm actualizar"><i class="zmdi zmdi-edit"></i></button>';
+                $data['elimina'] = '<button data-id="'.$data['idtienda'].'" type="button" class="btn btn-danger btn-raised btn-sm eliminar"><i class="zmdi zmdi-delete"></i></button>';
                 $arreglo["data"][] = $data;
             }
             echo json_encode($arreglo);
@@ -67,6 +68,16 @@ case 'mostrartienda':
     }
     echo json_encode($data);
     break;
+    case 'eliminar':
+        $elimina = $Tiendas->eliminar($idtienda);
+        if ($elimina === true) {
+            echo "1";
+        } elseif ($elimina === "dependencias") {
+            echo "dependencias";
+        } else {
+            echo "0";
+        }
+        break;
 
     default:
         // code...

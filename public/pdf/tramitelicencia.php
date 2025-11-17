@@ -1,4 +1,4 @@
-<?php 
+    <?php 
 session_start();
 if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
 	echo "Debe ingresar al sistema correctamente";
@@ -189,7 +189,7 @@ $fecha_actual = strftime("Chilca, " . '%d de %B del %Y');
 $fecha_actual = strtr($fecha_actual, $meses);
 $pdf->Cell(52, 4, utf8_decode($fecha_actual), 0, 0, 'L');
 
-$pdf->Image('../../files/qr/'.$resulta['qr'], 162,233,32); 
+	$pdf->Image('../../files/qr/'.$resulta['qr'], 162,233,32);
 	//izquierda o derecha/arriba o abajo/tamaño de imagen
 
 $pdf->Output('Licencia.pdf', 'I');

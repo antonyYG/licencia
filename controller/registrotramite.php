@@ -86,31 +86,30 @@ case 'insertar':
     if ($tipolicencia === '1') { $vigencia = ''; }
 	$path="../files/qr/";
 
-	$data="Número de Doc: ".$numdoc.PHP_EOL;
-	$data.="Otorgado a: ".$nombresLi.' '.$apellidopli.' '.$apellidomli.PHP_EOL; 
-	$data.="Número de Expediente: ".$expediente.PHP_EOL;
-	$data.="Número de Ruc: ".$numruc.PHP_EOL;
-	$data.="Establecimiento Ubicado en: ".$ubicacion.PHP_EOL;
-	$data.="Giro o Comercio: ".$nombregiros.PHP_EOL;
-	$data.="Nombre Comercial: ".$nombrecomercial.PHP_EOL;
-	$data.="Area Comercial: ".$arealocal.PHP_EOL;
-	$data.="Número de Recibo de Tesoreria: ".$recibotes.PHP_EOL;
-	$data.="Tipo de anuncio: ".$fechexpedicion.PHP_EOL;
-	if ($tipolicencia=='1') {
-		$data.="Tipo de Licencia: Indeterminado".PHP_EOL;
-	}else{
-		$data.="Tipo de Licencia: Temporal".PHP_EOL;
-	}
-	$data.="Número de Resolución Licencia: ".$numresolucion.PHP_EOL;
-	$data.="Fecha de Expedición de Licencia: ".$fechingreso.PHP_EOL;
-    // Mostrar vigencia amigable: indeterminada si tipo es 1 o vigencia vacía/0001-01-01
+	$data="LICENCIA DE FUNCIONAMIENTO".PHP_EOL;
+	$data.="========================".PHP_EOL.PHP_EOL;
+	$data.="DETALLES DEL TRÁMITE:".PHP_EOL;
+	$data.="- Número de Documento: ".$numdoc.PHP_EOL;
+	$data.="- Otorgado a: ".$nombresLi.' '.$apellidopli.' '.$apellidomli.PHP_EOL;
+	$data.="- Número de Expediente: ".$expediente.PHP_EOL;
+	$data.="- Número de RUC: ".$numruc.PHP_EOL;
+	$data.="- Ubicación del Establecimiento: ".$ubicacion.PHP_EOL;
+	$data.="- Giro o Comercio: ".$nombregiros.PHP_EOL;
+	$data.="- Nombre Comercial: ".$nombrecomercial.PHP_EOL;
+	$data.="- Área del Local: ".$arealocal." m²".PHP_EOL;
+	$data.="- Número de Recibo de Tesorería: ".$recibotes.PHP_EOL;
+	$data.="- Fecha de Expedición: ".$fechexpedicion.PHP_EOL;
+	$data.="- Tipo de Licencia: ".($tipolicencia=='1' ? "Indeterminado" : "Temporal").PHP_EOL;
+	$data.="- Número de Resolución Licencia: N° ".$numresolucion."-2025-GDET-MPCH".PHP_EOL;
+	$data.="- Fecha de Expedición de Licencia: ".$fechingreso.PHP_EOL;
     $vigencia_text = ($tipolicencia=='1' || $vigencia === "" || $vigencia === "0001-01-01") ? "Indeterminado" : $vigencia;
-    $data .= "Vigencia de licencia: " . $vigencia_text . PHP_EOL;
-	$data.="Estado de licencia: ACTIVO".PHP_EOL;
-	$data.= "Número de Resolución ITSE: " . $numresolucion_itse . PHP_EOL; // Agregar el nuevo campo al QR
-	$data.= "Fecha expedición ITSE: " . $expedicion_itse . PHP_EOL; // Agregar el nuevo campo al QR
-	$data.= "Fecha de vigencia ITSE: " . $vigencia_itse . PHP_EOL; // Agregar el nuevo campo al QR
-	$data .= "Estado ITSE: ACTIVO". PHP_EOL;
+    $data .= "- Vigencia de Licencia: " . $vigencia_text . PHP_EOL;
+	$data.="- Estado de Licencia: ACTIVO".PHP_EOL.PHP_EOL;
+	$data.="DETALLES ITSE:".PHP_EOL;
+	$data.="- Número de Resolución ITSE: N° ".$numresolucion_itse."-2025-GDE-ODC-MPCH".PHP_EOL;
+	$data.="- Fecha de Expedición ITSE: ".$expedicion_itse.PHP_EOL;
+	$data.="- Fecha de Vigencia ITSE: ".$vigencia_itse.PHP_EOL;
+	$data.="- Estado ITSE: ACTIVO".PHP_EOL;
 
 
 		
@@ -126,6 +125,8 @@ case 'insertar':
         // Fallback si la extensión GD no está habilitada: usa un QR existente
         $qr = '001.png';
     }
+
+
 		$inserta = $Tramite->insertartramite($expediente, $nombres, $giro, $nombrecomercial,$recibotes, $numresolucion, $vigencia,$fechingreso, $fechexpedicion, $qr, $tipolicencia,$numdoc, $numresolucion_itse, $expedicion_itse, $vigencia_itse); // Agregar el nuevo campo al método insertartramite
 		
         if ($inserta) {
@@ -152,35 +153,30 @@ case 'editar':
     if ($tipolicencia === '1') { $vigencia = ''; }
 		$path="../files/qr/";
 
-		$data="Número de Doc: ".$numdoc.PHP_EOL;
-		$data.="Otorgado a: ".$nombresLi.' '.$apellidopli.' '.$apellidomli.PHP_EOL; 
-		$data.="Número de Expediente: ".$expediente.PHP_EOL;
-		$data.="Número de Ruc: ".$numruc.PHP_EOL;
-		$data.="Establecimiento Ubicado en: ".$ubicacion.PHP_EOL;
-		$data.="Giro o Comercio: ".$nombregiros.PHP_EOL;
-		$data.="Nombre Comercial: ".$nombrecomercial.PHP_EOL;
-		$data.="Area Comercial: ".$arealocal.PHP_EOL;
-		$data.="Número de Recibo de Tesoreria: ".$recibotes.PHP_EOL;
-		$data.="Tipo de anuncio: ".$fechexpedicion.PHP_EOL;
-			if ($tipolicencia=='1') {
-			$data.="Tipo de Licencia: Indeterminado".PHP_EOL;
-		}else{
-			$data.="Tipo de Licencia: Temporal".PHP_EOL;
-		}
-		$data.="Número de Resolución de Licencia: ".$numresolucion.PHP_EOL;
-		$data.="Fecha de Expedicion de Licencia: ".$fechingreso.PHP_EOL;
+		$data="LICENCIA DE FUNCIONAMIENTO".PHP_EOL;
+		$data.="========================".PHP_EOL.PHP_EOL;
+		$data.="DETALLES DEL TRÁMITE:".PHP_EOL;
+		$data.="- Número de Documento: ".$numdoc.PHP_EOL;
+		$data.="- Otorgado a: ".$nombresLi.' '.$apellidopli.' '.$apellidomli.PHP_EOL;
+		$data.="- Número de Expediente: ".$expediente.PHP_EOL;
+		$data.="- Número de RUC: ".$numruc.PHP_EOL;
+		$data.="- Ubicación del Establecimiento: ".$ubicacion.PHP_EOL;
+		$data.="- Giro o Comercio: ".$nombregiros.PHP_EOL;
+		$data.="- Nombre Comercial: ".$nombrecomercial.PHP_EOL;
+		$data.="- Área del Local: ".$arealocal." m²".PHP_EOL;
+		$data.="- Número de Recibo de Tesorería: ".$recibotes.PHP_EOL;
+		$data.="- Fecha de Expedición: ".$fechexpedicion.PHP_EOL;
+		$data.="- Tipo de Licencia: ".($tipolicencia=='1' ? "Indeterminado" : "Temporal").PHP_EOL;
+		$data.="- Número de Resolución Licencia: N° ".$numresolucion."-2025-GDET-MPCH".PHP_EOL;
+		$data.="- Fecha de Expedición de Licencia: ".$fechingreso.PHP_EOL;
         $vigencia_text = ($tipolicencia=='1' || $vigencia === "" || $vigencia === "0001-01-01") ? "Indeterminado" : $vigencia;
-        $data .= "Vigencia: " . $vigencia_text . PHP_EOL;
-			if ($estado=='1') {
-			$data.="Estado de licencia: Activo".PHP_EOL;
-		}else{
-			$data.="Estado de licencia: Inactivo".PHP_EOL;
-		}
-		
-		$data .= "Número de Resolución ITSE: " . $numresolucion_itse . PHP_EOL; // Agregar el nuevo campo al QR
-		$data.= "Fecha expedición ITSE: " . $expedicion_itse . PHP_EOL; // Agregar el nuevo campo al QR
-		$data.= "vigencia ITSE: " . $vigencia_itse . PHP_EOL; // Agregar el nuevo campo al QR
-		$data .= "Estado ITSE: " . ($estado_itse == '1' ? "Activo" : "Inactivo") . PHP_EOL;
+        $data .= "- Vigencia de Licencia: " . $vigencia_text . PHP_EOL;
+		$data.="- Estado de Licencia: ".($estado=='1' ? "Activo" : "Inactivo").PHP_EOL.PHP_EOL;
+		$data.="DETALLES ITSE:".PHP_EOL;
+		$data.="- Número de Resolución ITSE: N° ".$numresolucion_itse."-2025-GDE-ODC-MPCH".PHP_EOL;
+		$data.="- Fecha de Expedición ITSE: ".$expedicion_itse.PHP_EOL;
+		$data.="- Fecha de Vigencia ITSE: ".$vigencia_itse.PHP_EOL;
+		$data.="- Estado ITSE: ".($estado_itse=='1' ? "Activo" : "Inactivo").PHP_EOL;
 	
 		
 	
@@ -194,6 +190,8 @@ case 'editar':
         } else {
             $qr = '001.png';
         }
+
+
 		$edita = $Tramite->editartramite($idtramite, $expediente, $nombres, $giro, $recibotes, $vigencia, $fechingreso, $fechexpedicion, $numresolucion, $nombrecomercial, $estado, $tipolicencia, $numdoc, $numresolucion_itse, $estado_itse, $expedicion_itse, $vigencia_itse); // Agregar el nuevo campo al método editartramite
         if ($edita) {
             echo "1";

@@ -78,6 +78,26 @@ $(document).on('click','.actualizar', function(){
 
 });
 
+$(document).on('click','.eliminar', function(){
+    var id = $(this).data("id");
+    if (confirm("¿Estás seguro de que deseas eliminar esta tienda?")) {
+        $.ajax({
+            "url": "../controller/tienda.php?boton=eliminar",
+            "method": "post",
+            "data": { idtienda: id }
+        }).done(function(rsp){
+            if (rsp == "1") {
+                toastr.success("Tienda eliminada exitosamente", "Tienda");
+                tabla.ajax.reload();
+            } else if (rsp == "dependencias") {
+                toastr.warning("No se puede eliminar la tienda porque tiene licencias o intervenciones asociadas", "Tienda");
+            } else {
+                toastr.error("No se pudo eliminar la tienda", "Tienda");
+            }
+        });
+    }
+});
+
 var tabla;
 
 function init(){
@@ -100,10 +120,11 @@ function listartienda(){
 			{"data":"nombres_per"},
 			{"data":"apellidop_per"},
 			{"data":"apellidom_per"},
-		
-			{"data":"edita"}
-			
-			
+
+			{"data":"edita"},
+			{"data":"elimina"}
+
+
 		],
 		"language":{
 			"url":"../public/datatables/js/espanol.js"

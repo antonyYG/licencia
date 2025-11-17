@@ -160,8 +160,9 @@ session_start();
 								<th style="color: green;">ACTUALIZAR</th>
 								<th style="color: purple;">GENERAR LICENCIA</th>
 								<th style="color: brown;">TIPO DE LICENCIA</th>
-								<th style="color: brown;">ESTADO DE LICENCIA</th>
-								<th>TIEMPO RESTANTE ITSE</th>
+<th style="color: brown;">ESTADO DE LICENCIA</th>
+<th style="color: brown;">Certificado ITSE</th>
+<th>TIEMPO RESTANTE ITSE</th>
 								<th style="color: brown;">ESTADO ITSE</th>
 							</tr>
 						</thead>
@@ -228,6 +229,9 @@ session_start();
 											<?php } else { ?>
 												<span style="color: white; text-align: center;width: 50px;background: red;border-radius: 6px;margin: 50px auto;padding: 2px;">Anulada</span>
 											<?php } ?>
+										</td>
+										<td>
+											<button type="button" class="btn btn-light btn-raised btn-sm" onclick="imprimir('../public/pdf/tramiteitse.php?idtramite=<?php echo $row['exp_num']; ?>','1200', '500')"><i class="zmdi zmdi-print"></i></button>
 										</td>
 										<td><span class="<?php echo $color_clase; ?>"><?php echo $tiempo_restante_itse; ?> días</span></td>
 

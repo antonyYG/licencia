@@ -28,6 +28,7 @@ $(document).ready(function(){
                     toastr.success("Se registro exitosamente","Giro");
                     limpiar();
                     table.ajax.reload();
+                    $("#exampleModal").modal("hide");
                 }else if (rsp==='dup'){
                     toastr.error("El giro ya existe en el sistema","Giro");
                 }else{

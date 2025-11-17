@@ -44,14 +44,22 @@
              	<label style="color: blue;font-size: 30px;" id="hola"></label>
              </div>
              <center>
-             <div class="col-md-12"> 
-             	<h1 align="center" style="color: red;">Licencia de Funcionamiento</h1>   
+             <div class="col-md-12">
+             	<h1 align="center" style="color: red;">Licencia de Funcionamiento</h1>
 				<div class="table-responsive">
-					<table align="center" class="table table-striped table-bordered" style="width:60%" id="expediente" border="1">
+					<table align="center" class="table table-striped table-bordered" style="width:60%; background-color: #f5f5f5; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);" id="expediente" border="1">
+						<thead>
+							<tr>
+								<th colspan="2" style="text-align:center; font-size:18px; font-weight:bold; background-color: #e0e0e0;">Detalles de la Licencia de Funcionamiento</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
 				    </table>
 				</div>
+
              </div>
-         </center>   
+         </center>
          </div>
 		</div>
 

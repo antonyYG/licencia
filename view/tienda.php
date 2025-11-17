@@ -50,6 +50,7 @@
                                     <th>Apellido Paterno</th>
                                     <th>Apellido Materno</th>
                                     <th style="color: green;">Editar</th>
+                                    <th style="color: red;">Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody>

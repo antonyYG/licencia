@@ -80,14 +80,14 @@ switch ($_GET['boton']) {
 	<tr>
 	<th>ESTADO ITSE</th>
     <td>';
-    
+
 // V E R I F I C A C I Ó N   C O R R E G I D A
-// Soluciona el Warning: Undefined array key "estadoitse"
-if (isset($lista['estadoitse']) && $lista['estadoitse'] == '1') {
+// Soluciona el Warning: Undefined array key "EstadoITSE"
+if (isset($lista['EstadoITSE']) && $lista['EstadoITSE'] == '1') {
     $lis .= 'activo';
 } else {
     // Si no existe la clave O si existe pero no es '1' (es '0' o cualquier otro valor)
-    $lis .= 'inactivo'; 
+    $lis .= 'inactivo';
 }
 
 $lis .= '</td>
