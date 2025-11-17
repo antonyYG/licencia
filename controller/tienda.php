@@ -16,6 +16,7 @@ $latitud = isset($_POST['latitud']) ? limpiar($_POST['latitud']) : "";
 $longitud = isset($_POST['longitud']) ? limpiar($_POST['longitud']) : "";
 $zona = isset($_POST['zona']) ? limpiar($_POST['zona']) : "";
 $celular = isset($_POST['celular']) ? limpiar($_POST['celular']) : "";
+$correo = isset($_POST['correo']) ? limpiar($_POST['correo']) : "";
 
 switch ($_GET['boton']) {
     case 'lista':
@@ -34,7 +35,7 @@ switch ($_GET['boton']) {
         mysqli_free_result($lista);
         break;
     case 'insertar':
-        $inserta = $Tiendas->insertar($ruc, $dni, $nombres, $apellidop, $apellidom, $ubicacion, $area, $latitud, $longitud, $zona, $celular);
+        $inserta = $Tiendas->insertar($ruc, $dni, $nombres, $apellidop, $apellidom, $ubicacion, $area, $latitud, $longitud, $zona, $celular,$correo);
         if ($inserta) {
             echo "1";
         } else {
@@ -42,7 +43,7 @@ switch ($_GET['boton']) {
         }
         break;
     case 'editar':
-        $edita = $Tiendas->editar($idtienda, $ruc, $dni, $nombres, $apellidop, $apellidom, $ubicacion, $area, $latitud, $longitud, $zona, $celular);
+        $edita = $Tiendas->editar($idtienda, $ruc, $dni, $nombres, $apellidop, $apellidom, $ubicacion, $area, $latitud, $longitud, $zona, $celular,$correo);
         if ($edita) {
             echo "1";
         } else {
@@ -65,6 +66,7 @@ case 'mostrartienda':
         $data["longitud"] = $row["longitud"];
         $data["zona"] = $row["id_zona"];
         $data["celular"] = $row["celular"];
+        $data["correo"] = $row["correo"];
     }
     echo json_encode($data);
     break;

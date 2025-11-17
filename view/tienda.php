@@ -145,6 +145,12 @@
 					</div>
 					<div class="form-row">
 						<div class="form-group col-md-6">
+							<label for="inputPassword4" style="color: black;">Correo</label>
+							<input type="text" class="form-control" id="correo" name="correo" placeholder="Ingresar correo del dueño de la tienda" >
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
 							<label for="inputEmail4" style="color: black;">Area Comercial</label>
 							<input type="text" class="form-control" id="area" name="area" placeholder="Ingresar el Area">
 						</div>
@@ -267,6 +273,12 @@
                 <div class="form-group col-md-6">
                     <label for="inputEmail4" style="color: black;">Area del Local</label>
                     <input type="text" class="form-control" id="areaedit" name="area" placeholder="Ingresar el Área">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" style="color: black;">Correo</label>
+                    <input type="text" class="form-control" id="correoEdit" name="correo" placeholder="Ingresar el correo">
                 </div>
             </div>
             <div class="form-row">

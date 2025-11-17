@@ -11,7 +11,7 @@ $(document).ready(function(){
     var longitud = $("#longitud").val();
     var zona = $("#zona").val();
     var celular = $("#celular").val();
-
+    var correo = $("#correo").val();
     if (ruc.length == 0 || nombres.length == 0 || apellidop.length == 0 || apellidom.length == 0) {
         toastr.info("Ingresar los datos respectivos", "Tienda");
     } else if (latitud.length == 0 || longitud.length == 0) {
@@ -23,7 +23,7 @@ $(document).ready(function(){
             "data": datos
         }).done(function(rsp){
             if (rsp == "1") {
-                toastr.success("Se registr�� exitosamente", "Tienda");
+                toastr.success("Se registró exitosamente", "Tienda");
                 limpiar();
                 tabla.ajax.reload();
             } else {
@@ -56,6 +56,7 @@ $(document).on('click','.actualizar', function(){
                 $("#longitudedit").val(rsp.longitud);
                 $("#zonaedit").val(rsp.zona);
                 $("#celularedit").val(rsp.celular);
+                $("#correoEdit").val(rsp.correo);
             });
 });
 
@@ -150,6 +151,7 @@ function limpiar(){
 	$("#longitud").val('');
 	$("#zona").val('');
 	$("#celular").val('');
+	$("#correo").val('');
 }
 
 

@@ -124,13 +124,13 @@ require_once "../config/conexion.php";
         $mail = new PHPMailer(true);
 
         try {
-			$mail->isSMTP();
-			$mail->Host       = 'smtp.gmail.com';
-			$mail->SMTPAuth   = true;
-			$mail->Username   = 'gerardoyupanqui18@gmail.com';
-			$mail->Password   = 'pufzkyslkbvmsocq';
-			$mail->SMTPSecure = 'tls';
-			$mail->Port       = 587;
+			      $mail->isSMTP();
+            $mail->Host       = 'sandbox.smtp.mailtrap.io';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'd53aa07c60c441';
+            $mail->Password   = '10020d1de49587';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port       = 2525;
 
             // Remitente
             $mail->setFrom('licencia@gmail.com', 'Sistema de Licencias');

@@ -231,13 +231,13 @@ $pdf->Output($ruta_pdf, 'F');
 $mail = new PHPMailer(true);
 
 try {
-    $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com';
+    // $mail->isSMTP();
+    $mail->Host       = 'sandbox.smtp.mailtrap.io';
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'gerardoyupanqui18@gmail.com';
-    $mail->Password   = 'pufzkyslkbvmsocq';
+    $mail->Username   = 'd53aa07c60c441';
+    $mail->Password   = '10020d1de49587';
     $mail->SMTPSecure = 'tls';
-    $mail->Port       = 587;
+    $mail->Port       = 2525;
 
     // Correo del ciudadano
     $mail->addAddress($resulta['correo']);  
