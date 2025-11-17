@@ -11,39 +11,331 @@
   var lastCoords = [];
   var lastCounts = { con: 0, sin: 0, total: 0, radius_m: 0, center: null };
   var exportLock = false;
+  
+  // Función para calcular área de polígono (fallback si no está disponible L.GeometryUtil)
+  function calcularAreaPoligono(coords) {
+    if (coords.length < 3) return 0;
+    
+    var area = 0;
+    var n = coords.length;
+    
+    for (var i = 0; i < n; i++) {
+      var j = (i + 1) % n;
+      var lat1 = coords[i][0];
+      var lng1 = coords[i][1];
+      var lat2 = coords[j][0];
+      var lng2 = coords[j][1];
+      
+      area += (lng2 - lng1) * (2 + Math.sin(deg2rad(lat1)) + Math.sin(deg2rad(lat2)));
+    }
+    
+    area = Math.abs(area) * 6371000 * 6371000 / 2; // Radio de la Tierra en metros
+    return area;
+  }
+  
+  // Función para convertir grados a radianes
+  function deg2rad(deg) {
+    return deg * (Math.PI/180);
+  }
 
   function initMap(){
     if (typeof L === 'undefined') return;
     // Evita error de inicialización doble del contenedor del mapa
     var container = L.DomUtil.get('estad-map');
     if (container){ container._leaflet_id = null; }
-    map = L.map('estad-map').setView([centerChilca.lat, centerChilca.lng], 13);
+    
+    // Crear mapa con opciones de interacción mejoradas
+    map = L.map('estad-map', {
+      center: [centerChilca.lat, centerChilca.lng],
+      zoom: 13,
+      zoomControl: true,
+      attributionControl: true,
+      // Habilitar todas las interacciones
+      dragging: true,
+      touchZoom: true,
+      doubleClickZoom: true,
+      scrollWheelZoom: true,
+      boxZoom: true,
+      keyboard: true,
+      tap: true
+    });
+    
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+    
     L.control.scale().addTo(map);
     storesLayer = L.layerGroup().addTo(map);
+    
+    // Agregar funcionalidad de clic en el mapa - SIN CONFIRMACIÓN
+    map.on('click', function(e) {
+      // Mover directamente el punto de búsqueda sin confirmación
+      setSearchResult(e.latlng.lat, e.latlng.lng);
+    });
+    
+    // Agregar control de dibujo para selección de área
+    addAreaSelectionControl();
+  }
+  
+  // Función para agregar control de selección de área
+  function addAreaSelectionControl() {
+    // Crear un control personalizado
+    var areaControl = L.Control.extend({
+      options: {
+        position: 'topleft'
+      },
+      onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-control-area-selection');
+        container.innerHTML = '📍 Área';
+        container.title = 'Dibujar área de búsqueda';
+        
+        container.onclick = function() {
+          startAreaSelection();
+        };
+        
+        return container;
+      }
+    });
+    
+    map.addControl(new areaControl());
+  }
+  
+  // Variables para la selección de área
+  var areaDrawn = null;
+  var areaMarkers = [];
+  
+  // Función para iniciar selección de área - MÁS FLUIDA Y SIN INTERRUPCIONES
+  function startAreaSelection() {
+    // Marcar el control como activo
+    var controlBtn = document.querySelector('.leaflet-control-area-selection');
+    if (controlBtn) {
+      controlBtn.classList.add('active');
+    }
+    
+    // Cambiar cursor del mapa
+    var mapContainer = document.getElementById('estad-map');
+    if (mapContainer) {
+      mapContainer.classList.add('area-selection-mode');
+    }
+    
+    // Mostrar instrucción temporal (se quita automáticamente después de 3 segundos)
+    var instruccion = L.control({position: 'top'});
+    instruccion.onAdd = function(map) {
+      var div = L.DomUtil.create('div', 'instruccion-area');
+      div.innerHTML = 'Haz clic para marcar puntos • Doble clic para finalizar • ESC para cancelar';
+      div.style.backgroundColor = 'rgba(0,0,0,0.7)';
+      div.style.color = 'white';
+      div.style.padding = '8px 12px';
+      div.style.borderRadius = '4px';
+      div.style.fontSize = '14px';
+      div.style.marginTop = '10px';
+      div.style.transition = 'opacity 0.5s';
+      return div;
+    };
+    instruccion.addTo(map);
+    
+    // Ocultar instrucción después de 3 segundos
+    setTimeout(function() {
+      var instruccionDiv = document.querySelector('.instruccion-area');
+      if (instruccionDiv) {
+        instruccionDiv.style.opacity = '0';
+        setTimeout(function() {
+          map.removeControl(instruccion);
+        }, 500);
+      }
+    }, 3000);
+    
+    var areaCoords = [];
+    var tempLine = null;
+    var isActive = true;
+    
+    function onMapClickForArea(e) {
+      if (!isActive) return;
+      
+      areaCoords.push([e.latlng.lat, e.latlng.lng]);
+      
+      // Marcar el punto con círculo pequeño (más rápido que marker)
+      var point = L.circleMarker(e.latlng, {
+        radius: 4,
+        color: 'red',
+        fillColor: 'red',
+        fillOpacity: 1
+      }).addTo(map);
+      
+      areaMarkers.push(point);
+      
+      // Actualizar línea temporal
+      if (tempLine) {
+        map.removeLayer(tempLine);
+      }
+      if (areaCoords.length > 1) {
+        tempLine = L.polyline(areaCoords, {
+          color: 'red', 
+          weight: 2,
+          dashArray: '5, 10'
+        }).addTo(map);
+      }
+    }
+    
+    function finishAreaSelection(e) {
+      if (!isActive) return;
+      isActive = false;
+      
+      // Restaurar cursor y botón
+      if (controlBtn) {
+        controlBtn.classList.remove('active');
+      }
+      if (mapContainer) {
+        mapContainer.classList.remove('area-selection-mode');
+      }
+      
+      // Remover eventos
+      map.off('click', onMapClickForArea);
+      map.off('dblclick', finishAreaSelection);
+      document.removeEventListener('keydown', cancelAreaSelection);
+      
+      // Remover instrucción
+      map.removeControl(instruccion);
+      
+      if (tempLine) {
+        map.removeLayer(tempLine);
+      }
+      
+      if (areaCoords.length >= 3) {
+        // Cerrar el polígono
+        areaCoords.push(areaCoords[0]);
+        
+        // Remover polígono anterior si existe
+        if (areaDrawn) {
+          map.removeLayer(areaDrawn);
+        }
+        
+        // Crear polígono del área
+        areaDrawn = L.polygon(areaCoords, {
+          color: '#ff0000',
+          fillColor: '#ff0000',
+          fillOpacity: 0.2,
+          weight: 2
+        }).addTo(map);
+        
+        // Calcular centro del área
+        var center = areaDrawn.getBounds().getCenter();
+        
+        // Calcular área
+        var area = 0;
+        if (typeof L.GeometryUtil !== 'undefined') {
+          area = L.GeometryUtil.geodesicArea(areaCoords);
+        } else {
+          area = calcularAreaPoligono(areaCoords);
+        }
+        
+        // Radio equivalente (círculo con misma área)
+        var radius = Math.sqrt(area / Math.PI); // en kilómetros
+        var radiusMeters = Math.min(radius * 1000, 2000); // Limitar a 2km máximo
+        
+        // Actualizar controles
+        currentRadius = Math.round(radiusMeters);
+        document.getElementById('estad-radius').value = currentRadius;
+        document.getElementById('estad-radius-value').textContent = currentRadius + ' m';
+        
+        // Establecer nuevo centro con animación suave
+        setSearchResult(center.lat, center.lng);
+        
+        // Limpiar marcadores temporales con animación
+        setTimeout(function() {
+          areaMarkers.forEach(function(marker) {
+            if (marker) map.removeLayer(marker);
+          });
+          areaMarkers = [];
+        }, 500);
+        
+      } else {
+        // Limpiar si no hay suficientes puntos
+        areaMarkers.forEach(function(marker) {
+          if (marker) map.removeLayer(marker);
+        });
+        areaMarkers = [];
+      }
+    }
+    
+    // Configurar eventos
+    map.on('click', onMapClickForArea);
+    map.on('dblclick', finishAreaSelection);
+    
+    // Permitir cancelar con ESC
+    function cancelAreaSelection(e) {
+      if (e.key === 'Escape') {
+        isActive = false;
+        
+        // Restaurar cursor y botón
+        if (controlBtn) {
+          controlBtn.classList.remove('active');
+        }
+        if (mapContainer) {
+          mapContainer.classList.remove('area-selection-mode');
+        }
+        
+        map.off('click', onMapClickForArea);
+        map.off('dblclick', finishAreaSelection);
+        document.removeEventListener('keydown', cancelAreaSelection);
+        
+        map.removeControl(instruccion);
+        if (tempLine) map.removeLayer(tempLine);
+        
+        areaMarkers.forEach(function(marker) {
+          if (marker) map.removeLayer(marker);
+        });
+        areaMarkers = [];
+      }
+    }
+    
+    document.addEventListener('keydown', cancelAreaSelection);
   }
 
   function setSearchResult(lat, lng){
     if (!map) return;
-    if (marker) { map.removeLayer(marker); }
-    if (circle) { map.removeLayer(circle); }
+    
+    // Actualizar el centro actual
     currentCenter = { lat: lat, lng: lng };
-    marker = L.marker([lat, lng]).addTo(map);
-    circle = L.circle([lat, lng], { radius: currentRadius, color: '#1976d2', fillColor: '#90caf9', fillOpacity: 0.25 }).addTo(map);
-    map.setView([lat, lng], 16);
+    
+    // Animación suave para mover el marcador y círculo
+    if (marker) { 
+      marker.setLatLng([lat, lng]); // Mover existente en lugar de recrear
+    } else {
+      marker = L.marker([lat, lng]).addTo(map);
+    }
+    
+    if (circle) { 
+      circle.setLatLng([lat, lng]); // Mover existente en lugar de recrear
+    } else {
+      circle = L.circle([lat, lng], { radius: currentRadius, color: '#1976d2', fillColor: '#90caf9', fillOpacity: 0.25 }).addTo(map);
+    }
+    
+    // Animación suave del mapa
+    map.setView([lat, lng], 16, { animate: true, duration: 0.5 });
+    
+    // Actualizar estadísticas
     fetchStats(lat, lng, currentRadius);
   }
 
   function fetchStats(lat, lng, radius){
+    console.log('=== FETCH STATS DEBUG ===');
+    console.log('Lat:', lat, 'Lng:', lng, 'Radius:', radius);
+    
     var url = '../controller/estadisticas.php?lat='+encodeURIComponent(lat)+'&lng='+encodeURIComponent(lng)+'&radius='+encodeURIComponent(radius);
+    console.log('URL:', url);
+    
     fetch(url).then(function(r){ return r.text(); }).then(function(text){
+      console.log('Respuesta cruda:', text);
       var data;
       try { data = JSON.parse(text); }
       catch(e){ console.error('Respuesta no JSON:', text); showError('Error al obtener estadísticas: ' + text.slice(0, 160)); return; }
       if (data.error){ showError(data.error); return; }
+      
+      console.log('Datos recibidos:', data);
+      console.log('Tiendas:', data.tiendas ? data.tiendas.length : 0);
+      console.log('Coordenadas:', data.coords ? data.coords.length : 0);
       // 1) Renderizar coordenadas válidas primero
       var coords = Array.isArray(data.coords) ? data.coords : (Array.isArray(data.tiendas) ? data.tiendas.map(function(t){
         return { id: t.id_tienda || t.id || null, lat: parseFloat(t.latitud), lng: parseFloat(t.longitud), dist_km: t.dist_km };
@@ -153,75 +445,6 @@
     box.innerHTML = html;
   }
 
-  // Construye y descarga CSV con BOM UTF-8, encabezados y datos del gráfico
-  function exportCSV(){
-    if (exportLock) { return; }
-    exportLock = true;
-    var btn = document.getElementById('estad-export');
-    if (btn) { btn.disabled = true; }
-    try {
-      var bom = '\ufeff'; // BOM para Excel
-      var lines = [];
-      // Resumen del gráfico
-      lines.push('Resumen');
-      lines.push('Centro Lat,Centro Lng,Radio (m),Total,Con Licencia,Sin Licencia,Cumplimiento (%)');
-      var pct = lastCounts.total > 0 ? Math.round((lastCounts.con / lastCounts.total) * 100) : 0;
-      var centerLat = (lastCounts.center && lastCounts.center.lat) ? lastCounts.center.lat : '';
-      var centerLng = (lastCounts.center && lastCounts.center.lng) ? lastCounts.center.lng : '';
-      lines.push([centerLat, centerLng, lastCounts.radius_m || currentRadius, lastCounts.total, lastCounts.con, lastCounts.sin, pct].join(','));
-      lines.push('');
-      // Sección Tiendas
-      lines.push('Tiendas');
-      lines.push('ID,Latitud,Longitud,Distancia (m),Licencia,Condicion,Nombre Comercial,Propietario,Ubicacion');
-      var tiendasFuente = (lastTiendas && lastTiendas.length > 0) ? lastTiendas : (lastCoords || []);
-      tiendasFuente.forEach(function(t){
-        var id = t.idtienda != null ? t.idtienda : '';
-        var lat = isFinite(parseFloat(t.latitud)) ? parseFloat(t.latitud).toFixed(6) : '';
-        var lng = isFinite(parseFloat(t.longitud)) ? parseFloat(t.longitud).toFixed(6) : '';
-        var dKm = (typeof t.dist_km !== 'undefined') ? parseFloat(t.dist_km) : NaN;
-        var dM = isFinite(dKm) ? Math.round(dKm * 1000) : '';
-        var hasCond = (typeof t.condicion !== 'undefined' && t.condicion !== null);
-        var lic = hasCond ? (parseInt(t.condicion) === 1 ? 'Con licencia' : 'Sin licencia') : '';
-        var cond = hasCond ? (parseInt(t.condicion) === 1 ? 1 : 0) : '';
-        function esc(v){ return String(v || '').replace(/\n/g,' ').replace(/\r/g,' ').replace(/"/g,'""'); }
-        function q(v){ return '"'+esc(v)+'"'; }
-        lines.push([id, lat, lng, dM, q(lic), cond, q(t.nombre_comercial), q(t.nombres_per), q(t.ubic_tienda)].join(','));
-      });
-      if (!tiendasFuente || tiendasFuente.length === 0){
-        lines.push('No hay tiendas dentro del radio seleccionado');
-      }
-      lines.push('');
-      // Sección Coordenadas
-      lines.push('Coordenadas');
-      lines.push('ID,Latitud,Longitud,Distancia (m)');
-      lastCoords.forEach(function(c){
-        var id = (c.idtienda != null) ? c.idtienda : (c.id || '');
-        var lat = (typeof c.lat !== 'undefined') ? parseFloat(c.lat) : parseFloat(c.latitud);
-        var lng = (typeof c.lng !== 'undefined') ? parseFloat(c.lng) : parseFloat(c.longitud);
-        var dKm = (typeof c.dist_km !== 'undefined') ? parseFloat(c.dist_km) : NaN;
-        var dM = isFinite(dKm) ? Math.round(dKm * 1000) : '';
-        lines.push([id, isFinite(lat) ? lat.toFixed(6) : '', isFinite(lng) ? lng.toFixed(6) : '', dM].join(','));
-      });
-      var csv = bom + lines.join('\r\n');
-      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      var ts = new Date();
-      function pad(n){ return n<10 ? '0'+n : ''+n; }
-      var fname = 'estadisticas_'+ ts.getFullYear() + pad(ts.getMonth()+1) + pad(ts.getDate()) + '_' + pad(ts.getHours()) + pad(ts.getMinutes()) + pad(ts.getSeconds()) + '.csv';
-      a.href = url;
-      a.download = fname;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function(){
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        if (btn) { btn.disabled = false; }
-        exportLock = false;
-      }, 200);
-    } catch(e){ console.error('Error generando CSV:', e); if (btn) { btn.disabled = false; } exportLock = false; }
-  }
-
   function renderStores(list, radius){
     var box = document.getElementById('estad-stores');
     if (!box) return;
@@ -239,7 +462,7 @@
       var lic = parseInt(t.condicion) === 1;
       var badge = lic ? '<span style="background:#2e7d32; color:#fff; padding:2px 6px; border-radius:4px; font-size:12px;">Con licencia</span>'
                       : '<span style="background:#c62828; color:#fff; padding:2px 6px; border-radius:4px; font-size:12px;">Sin licencia</span>';
-      var name = (t.nombre_comercial || t.nombres_per || '').trim();
+      var name = (t.nombre_comercial || t.nombres_per || '').trim(); // Mantener como estaba
       var addr = (t.ubic_tienda || '').trim();
       var dKm = (typeof t.dist_km !== 'undefined') ? parseFloat(t.dist_km) : NaN;
       var dM = isFinite(dKm) ? Math.round(dKm * 1000) : null;
@@ -266,6 +489,48 @@
   function showError(msg){
     var el = document.getElementById('estad-error');
     if (el){ el.textContent = msg; el.style.display = 'block'; }
+  }
+
+  // Exportación server-side a Excel vía endpoint PHP
+  function exportExcelServer(){
+    console.log('=== EXPORT EXCEL DEBUG ===');
+    if (exportLock) return;
+    exportLock = true;
+    var btn = document.getElementById('estad-export'); // Cambiar ID al botón correcto
+    if (btn) btn.disabled = true;
+    try {
+      // Usar el centro actual del mapa o el último centro usado
+      var center = currentCenter || (lastCounts && lastCounts.center) || centerChilca;
+      var radius = currentRadius || (lastCounts && lastCounts.radius_m) || 100;
+      
+      console.log('Center:', center);
+      console.log('Radius:', radius);
+      console.log('Current center:', currentCenter);
+      console.log('Current radius:', currentRadius);
+      
+      if (!center || typeof center.lat === 'undefined' || typeof center.lng === 'undefined'){
+        showError('Primero selecciona un punto de búsqueda en el mapa.');
+        if (btn) btn.disabled = false; exportLock = false; return;
+      }
+      var url = '../controller/export_excel.php?lat='+encodeURIComponent(center.lat)+'&lng='+encodeURIComponent(center.lng)+'&radius='+encodeURIComponent(radius);
+      console.log('Export URL:', url);
+      fetch(url).then(function(resp){
+        if (!resp.ok) throw new Error('Fallo en la descarga ('+resp.status+')');
+        return resp.blob();
+      }).then(function(blob){
+        var a = document.createElement('a');
+        var url = URL.createObjectURL(blob);
+        var ts = new Date();
+        function pad(n){ return n<10 ? '0'+n : ''+n; }
+        var fname = 'estadisticas_'+ ts.getFullYear() + pad(ts.getMonth()+1) + pad(ts.getDate()) + '_' + pad(ts.getHours()) + pad(ts.getMinutes()) + pad(ts.getSeconds());
+        var isXlsx = (blob && blob.type && blob.type.indexOf('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') !== -1);
+        a.href = url;
+        a.download = fname + '.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); if (btn) btn.disabled = false; exportLock = false; }, 200);
+      }).catch(function(err){ console.error(err); showError('No se pudo generar el archivo: '+err.message); if (btn) btn.disabled = false; exportLock = false; });
+    } catch(e){ console.error(e); if (btn) btn.disabled = false; exportLock = false; }
   }
 
   // Autocompletado con Nominatim (acotado a Chilca por viewbox)
@@ -348,11 +613,17 @@
     if (radiusInput){
       radiusInput.addEventListener('input', function(e){ updateRadius(e.target.value); });
     }
-    // Exportación CSV: evitar doble registro del evento
+    // Exportación Excel: evitar doble registro del evento
     var exportBtn = document.getElementById('estad-export');
     if (exportBtn && !exportBtn.dataset.bound){
-      exportBtn.addEventListener('click', exportCSV);
+      exportBtn.addEventListener('click', exportExcelServer); // Cambiar a exportExcelServer
       exportBtn.dataset.bound = '1';
+    }
+    // Exportación Excel (server-side): evitar doble registro
+    var exportExcelBtn = document.getElementById('exportButton');
+    if (exportExcelBtn && !exportExcelBtn.dataset.bound){
+      exportExcelBtn.addEventListener('click', exportExcelServer);
+      exportExcelBtn.dataset.bound = '1';
     }
     // Render inicial en el centro de Chilca para que el gráfico se muestre
     setSearchResult(centerChilca.lat, centerChilca.lng);
