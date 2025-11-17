@@ -1,4 +1,7 @@
-    <?php 
+<?php
+require_once "../../vendor/autoload.php";
+use PHPMailer\PHPMailer\PHPMailer;
+
 session_start();
 if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
 	echo "Debe ingresar al sistema correctamente";
@@ -10,8 +13,39 @@ $con=new conexion();
 $conexion=$con->conectar();
 $idtramite=$_GET['idtramite'];
 
-$tramite=mysqli_query($conexion, "SELECT l.idlicencia,l.exp_num,l.idtienda,t.numruc,t.nombres_per,t.apellidop_per,t.apellidom_per,t.ubic_tienda,t.area_tienda,l.idgiro,g.nombregiro,l.nombre_comercial,l.numrecibo_tesoreria,l.num_resolucion,l.vigencia_lic,l.fecha_ingreso,l.fecha_expedicion,l.qr,l.condicion,l.tipo_lic,l.num_tipolic,l.NumResITSE,l.expedicionITSE,l.vigenciaITSE FROM `licencia` l INNER JOIN tienda t ON l.idtienda = t.idtienda
-			INNER JOIN giro g ON l.idgiro = g.idgiro WHERE l.exp_num='$idtramite' limit 1");
+$tramite = mysqli_query($conexion, "
+    SELECT 
+        l.idlicencia,
+        l.exp_num,
+        l.idtienda,
+        t.numruc,
+        t.nombres_per,
+        t.apellidop_per,
+        t.apellidom_per,
+        t.ubic_tienda,
+        t.area_tienda,
+        t.correo,                        -- ← AGREGAR AQUÍ
+        l.idgiro,
+        g.nombregiro,
+        l.nombre_comercial,
+        l.numrecibo_tesoreria,
+        l.num_resolucion,
+        l.vigencia_lic,
+        l.fecha_ingreso,
+        l.fecha_expedicion,
+        l.qr,
+        l.condicion,
+        l.tipo_lic,
+        l.num_tipolic,
+        l.NumResITSE,
+        l.expedicionITSE,
+        l.vigenciaITSE
+    FROM licencia l
+    INNER JOIN tienda t ON l.idtienda = t.idtienda
+    INNER JOIN giro g ON l.idgiro = g.idgiro
+    WHERE l.exp_num='$idtramite'
+    LIMIT 1
+");
 $resulta=mysqli_fetch_array($tramite);
 
 
@@ -191,8 +225,35 @@ $pdf->Cell(52, 4, utf8_decode($fecha_actual), 0, 0, 'L');
 
 	$pdf->Image('../../files/qr/'.$resulta['qr'], 162,233,32);
 	//izquierda o derecha/arriba o abajo/tamaño de imagen
+$ruta_pdf = "../../files/licencias/".$resulta['exp_num'].".pdf";
+$pdf->Output($ruta_pdf, 'F');
+// $pdf->Output('Licencia.pdf', 'I');
+$mail = new PHPMailer(true);
 
-$pdf->Output('Licencia.pdf', 'I');
-	
+try {
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.gmail.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'gerardoyupanqui18@gmail.com';
+    $mail->Password   = 'pufzkyslkbvmsocq';
+    $mail->SMTPSecure = 'tls';
+    $mail->Port       = 587;
+
+    // Correo del ciudadano
+    $mail->addAddress($resulta['correo']);  
+
+    $mail->setFrom('gerardoyupanqui18@gmail.com', 'Municipalidad de Chilca');
+    $mail->Subject = 'Licencia de Funcionamiento Entregada';
+    $mail->Body = 'Estimado ciudadano, se adjunta su Licencia de Funcionamiento.';
+    $mail->AltBody = 'Su licencia está adjunta al correo.';
+
+    // ADJUNTAR PDF
+    $mail->addAttachment($ruta_pdf);
+
+    $mail->send();
+
+} catch (Exception $e) {
+    error_log("ERROR EMAIL: " . $mail->ErrorInfo);
+}
 }
 
