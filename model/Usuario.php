@@ -1,9 +1,10 @@
 <?php
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once "../config/conexion.php";
+require_once __DIR__ . '/../config/conexion.php';
 
  /**
   * 
@@ -27,9 +28,12 @@ require_once "../config/conexion.php";
  		if ($sql) {
 			$usuario_id = mysqli_insert_id($con);
 
-            // Enviar correo al administrador
-            $this->enviarCorreoUsuario($correo, $nombres, $apellidop, $apellidom, $dni,$contrasena);
- 			return true;
+      // Enviar correo al usuario con todos sus datos (retorna true/false)
+      $mailOk = $this->enviarCorreoUsuario($correo, $nombres, $apellidop, $apellidom, $dni, $contrasena, $direccion, $rol);
+      if (!$mailOk) {
+        return "mail_error"; // indicar error de envío
+      }
+      return true;
  		}else{
  			return false;
  		}
@@ -119,30 +123,57 @@ require_once "../config/conexion.php";
       return $fila['zonas'];
     }
 
-	private function enviarCorreoUsuario($correo, $nombres, $apellidop, $apellidom, $dni,$clave)
+    private function enviarCorreoUsuario($correo, $nombres, $apellidop, $apellidom, $dni, $clave, $direccion = '', $tipo_usuario = '')
     {
         $mail = new PHPMailer(true);
+        $logDir = __DIR__ . '/../logs';
+        $logFile = $logDir . '/mail.log';
+
+        if (!is_dir($logDir)) {
+            @mkdir($logDir, 0755, true);
+        }
 
         try {
-			      $mail->isSMTP();
-            $mail->Host       = 'sandbox.smtp.mailtrap.io';
+            // Usar SMTP (necesario para Gmail u otros proveedores)
+            $mail->isSMTP();
+            $mail->SMTPDebug = 0; // cambiar a 2 para debug
+            $mail->Host       = ''; // agregar host SMTP aquí
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'd53aa07c60c441';
-            $mail->Password   = '10020d1de49587';
-            $mail->SMTPSecure = 'tls';
-            $mail->Port       = 2525;
+            $mail->Username   = ''; // agregar usuario SMTP aquí
+            $mail->Password   = ''; // agregar contraseña SMTP aquí
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 3006; // agregar puerto SMTP aquí
+            $mail->CharSet    = 'UTF-8';
 
-            // Remitente
-            $mail->setFrom('licencia@gmail.com', 'Sistema de Licencias');
+            // Opciones para entornos de desarrollo (evita errores con certificados autofirmados)
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+
+            // Remitente: recomendamos usar la misma cuenta que en Username
+            $mail->setFrom($mail->Username, 'Sistema de Licencias');
 
             // Destinatario: el usuario registrado
             $mail->addAddress($correo, "$nombres $apellidop $apellidom");
 
             // Cargar la plantilla HTML
-            $html = file_get_contents(__DIR__ . '/../view/email/Correo.html');
+            $templatePath = __DIR__ . '/../view/email/Correo.html';
+            if (!file_exists($templatePath)) {
+                file_put_contents($logFile, date('c') . " - Plantilla no encontrada: $templatePath\n", FILE_APPEND);
+                return false;
+            }
+
+            $html = file_get_contents($templatePath);
             $html = str_replace('{{nombre}}', "$nombres $apellidop $apellidom", $html);
             $html = str_replace('{{dni}}', $dni, $html);
             $html = str_replace('{{clave}}', $clave, $html);
+            $html = str_replace('{{correo}}', $correo, $html);
+            $html = str_replace('{{direccion}}', $direccion, $html);
+            $html = str_replace('{{tipo_usuario}}', $tipo_usuario, $html);
 
             // Configurar contenido del correo
             $mail->isHTML(true);
@@ -150,8 +181,13 @@ require_once "../config/conexion.php";
             $mail->Body    = $html;
 
             $mail->send();
+
+            file_put_contents($logFile, date('c') . " - Enviado a: $correo\n", FILE_APPEND);
+            return true;
         } catch (Exception $e) {
-            error_log("Error al enviar correo: " . $mail->ErrorInfo);
+            $msg = date('c') . " - Error al enviar a $correo: " . $e->getMessage() . "\n";
+            file_put_contents($logFile, $msg, FILE_APPEND);
+            return false;
         }
     }
 

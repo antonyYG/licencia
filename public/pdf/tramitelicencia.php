@@ -232,12 +232,12 @@ $mail = new PHPMailer(true);
 
 try {
     // $mail->isSMTP();
-    $mail->Host       = 'sandbox.smtp.mailtrap.io';
+    $mail->Host       = ''; // agregar host SMTP aquí
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'd53aa07c60c441';
-    $mail->Password   = '10020d1de49587';
-    $mail->SMTPSecure = 'tls';
-    $mail->Port       = 2525;
+    $mail->Username   = ''; // agregar usuario SMTP aquí
+    $mail->Password   = ''; // agregar contraseña SMTP aquí
+    $mail->SMTPSecure = ''; // agregar tipo de encriptación SMTP aquí
+    $mail->Port       = 3006; // agregar puerto SMTP aquí
 
     // Correo del ciudadano
     $mail->addAddress($resulta['correo']);  

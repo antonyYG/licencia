@@ -40,10 +40,14 @@ switch ($_GET['boton']) {
 			$correo,
 			$tipoUsuario
 		);
-		if ($inserta) {
-			echo "1";
-		}else{
-			echo "0";
+		if ($inserta === true) {
+			echo "1"; // creado y correo enviado
+		} elseif ($inserta === "correo_duplicado") {
+			echo "2"; // correo duplicado
+		} elseif ($inserta === "mail_error") {
+			echo "3"; // creado pero hubo error enviando correo
+		} else {
+			echo "0"; // error general
 		}
 		break;
 	case 'editar':
