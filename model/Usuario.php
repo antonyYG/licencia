@@ -137,12 +137,12 @@ require_once __DIR__ . '/../config/conexion.php';
             // Usar SMTP (necesario para Gmail u otros proveedores)
             $mail->isSMTP();
             $mail->SMTPDebug = 0; // cambiar a 2 para debug
-            $mail->Host       = ''; // agregar host SMTP aquí
+            $mail->Host       = 'smtp.gmail.com'; // agregar host SMTP aquí
             $mail->SMTPAuth   = true;
-            $mail->Username   = ''; // agregar usuario SMTP aquí
+            $mail->Username   = 'cgrupo12@gmail.com'; // agregar usuario SMTP aquí
             $mail->Password   = ''; // agregar contraseña SMTP aquí
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 3006; // agregar puerto SMTP aquí
+            $mail->Port       = 587; // agregar puerto SMTP aquí
             $mail->CharSet    = 'UTF-8';
 
             // Opciones para entornos de desarrollo (evita errores con certificados autofirmados)

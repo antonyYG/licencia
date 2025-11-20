@@ -1,6 +1,7 @@
 <?php
 require_once "../../vendor/autoload.php";
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 session_start();
 if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
@@ -226,23 +227,45 @@ $pdf->Cell(52, 4, utf8_decode($fecha_actual), 0, 0, 'L');
 	$pdf->Image('../../files/qr/'.$resulta['qr'], 162,233,32);
 	//izquierda o derecha/arriba o abajo/tamaño de imagen
 $ruta_pdf = "../../files/licencias/".$resulta['exp_num'].".pdf";
+// Guardar PDF en disco
 $pdf->Output($ruta_pdf, 'F');
-// $pdf->Output('Licencia.pdf', 'I');
+
+// Enviar el PDF al navegador (inline) para que el usuario lo vea al hacer click en "Generar Licencia"
+if (file_exists($ruta_pdf)) {
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: inline; filename="' . basename($ruta_pdf) . '"');
+    header('Content-Transfer-Encoding: binary');
+    header('Accept-Ranges: bytes');
+    // Enviar el archivo al navegador
+    readfile($ruta_pdf);
+    // Nota: el script continuará y tratará de enviar el correo después de entregar el PDF
+}
+
 $mail = new PHPMailer(true);
 
 try {
-    // $mail->isSMTP();
-    $mail->Host       = ''; // agregar host SMTP aquí
+    $mail->isSMTP();
+    $mail->SMTPDebug = 0;
+    $mail->Host       = 'smtp.gmail.com'; // agregar host SMTP aquí
     $mail->SMTPAuth   = true;
-    $mail->Username   = ''; // agregar usuario SMTP aquí
+    $mail->Username   = 'cgrupo12@gmail.com'; // agregar usuario SMTP aquí
     $mail->Password   = ''; // agregar contraseña SMTP aquí
-    $mail->SMTPSecure = ''; // agregar tipo de encriptación SMTP aquí
-    $mail->Port       = 3006; // agregar puerto SMTP aquí
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // agregar tipo de encriptación SMTP aquí
+    $mail->Port       = 587; // agregar puerto SMTP aquí
+
+    // Opciones para entornos locales (evita errores SSL en desarrollo)
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
 
     // Correo del ciudadano
     $mail->addAddress($resulta['correo']);  
 
-    $mail->setFrom('gerardoyupanqui18@gmail.com', 'Municipalidad de Chilca');
+    $mail->setFrom('cgrupo12@gmail.com', 'Municipalidad de Chilca');
     $mail->Subject = 'Licencia de Funcionamiento Entregada';
     $mail->Body = 'Estimado ciudadano, se adjunta su Licencia de Funcionamiento.';
     $mail->AltBody = 'Su licencia está adjunta al correo.';
@@ -253,7 +276,7 @@ try {
     $mail->send();
 
 } catch (Exception $e) {
-    error_log("ERROR EMAIL: " . $mail->ErrorInfo);
+    error_log("ERROR EMAIL: " . $e->getMessage());
 }
 }
 

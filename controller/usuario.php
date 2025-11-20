@@ -22,6 +22,7 @@ switch ($_GET['boton']) {
 			$arreglo=array("data"=>[]);
 			while ($data=mysqli_fetch_assoc($lista)) {
 				$data['condicion']=($data['condicion']==true ?'<button type="button" data-id='.$data['idpersona'].' class="btn btn-success btn-raised btn-sm inactivo"><i class="fas fa-toggle-on"></i></button>':'<button type="button" data-id='.$data['idpersona'].' class="btn btn-danger btn-raised btn-sm activo"><i class="fas fa-toggle-off"></i></button>');
+				$data['delete']='<button type="button" data-id='.$data['idpersona'].' class="btn btn-danger btn-raised btn-sm elimina"><i class="zmdi zmdi-delete"></i></button>';
 				$data['edit']='<button type="button" data-id='.$data['idpersona'].' class="btn btn-primary btn-raised btn-sm actua"><i class="zmdi zmdi-edit"></i></button>';
 				$arreglo["data"][]=$data;
 			}
