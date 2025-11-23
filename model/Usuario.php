@@ -155,7 +155,7 @@ require_once __DIR__ . '/../config/conexion.php';
             );
 
             // Remitente: recomendamos usar la misma cuenta que en Username
-            $mail->setFrom($mail->Username, 'Sistema de Licencias');
+            $mail->setFrom($mail->Username, 'Municipalidad Distrital de Chilca');
 
             // Destinatario: el usuario registrado
             $mail->addAddress($correo, "$nombres $apellidop $apellidom");

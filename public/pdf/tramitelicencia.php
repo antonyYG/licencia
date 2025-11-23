@@ -265,9 +265,22 @@ try {
     // Correo del ciudadano
     $mail->addAddress($resulta['correo']);  
 
-    $mail->setFrom('cgrupo12@gmail.com', 'Municipalidad de Chilca');
+    $mail->setFrom('cgrupo12@gmail.com', 'Municipalidad Distrital de Chilca');
     $mail->Subject = 'Licencia de Funcionamiento Entregada';
-    $mail->Body = 'Estimado ciudadano, se adjunta su Licencia de Funcionamiento.';
+    $mail->isHTML(true);
+
+    $mail->Body = '
+        Estimado vecino,<br><br>
+        La Gerencia de Desarrollo Económico y Turismo de la Municipalidad Distrital de Chilca otorga la Licencia de Funcionamiento con los detalles indicados.<br><br>
+
+        Con la presente queda en la obligación de cumplir las siguientes disposiciones:<br>
+        • Reglamento de Aplicación de Sanciones Administrativas (RASA)<br>
+        • Cuadro Único de Infracciones (CUIS)<br>
+        • Ordenanza Municipal N° 388-MDCH/CM<br>
+        • Otros<br><br>
+
+        <b>EXHIBIR EN UN LUGAR VISIBLE</b>
+    ';
     $mail->AltBody = 'Su licencia está adjunta al correo.';
 
     // ADJUNTAR PDF
