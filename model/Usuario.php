@@ -140,7 +140,7 @@ require_once __DIR__ . '/../config/conexion.php';
             $mail->Host       = 'smtp.gmail.com'; // agregar host SMTP aquí
             $mail->SMTPAuth   = true;
             $mail->Username   = 'cgrupo12@gmail.com'; // agregar usuario SMTP aquí
-            $mail->Password   = ''; // agregar contraseña SMTP aquí
+            $mail->Password   = 'kmvuxrrpgxtuqhdi'; // agregar contraseña SMTP aquí
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587; // agregar puerto SMTP aquí
             $mail->CharSet    = 'UTF-8';

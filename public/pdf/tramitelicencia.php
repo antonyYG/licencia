@@ -249,7 +249,7 @@ try {
     $mail->Host       = 'smtp.gmail.com'; // agregar host SMTP aquí
     $mail->SMTPAuth   = true;
     $mail->Username   = 'cgrupo12@gmail.com'; // agregar usuario SMTP aquí
-    $mail->Password   = ''; // agregar contraseña SMTP aquí
+    $mail->Password   = 'kmvuxrrpgxtuqhdi'; // agregar contraseña SMTP aquí
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // agregar tipo de encriptación SMTP aquí
     $mail->Port       = 587; // agregar puerto SMTP aquí
 

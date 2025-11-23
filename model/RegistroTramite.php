@@ -9,6 +9,10 @@ class RegistroTramite extends conexion
     public $last_error = '';
 	public function listartramite(){
 		$con=parent::conectar();
+		// Actualizar estado ITSE y condición para licencias cuya vigencia ITSE llegó o pasó (<= hoy)
+		$update_sql = "UPDATE licencia SET EstadoITSE = 0, condicion = 0 WHERE DATE(vigenciaITSE) <= CURDATE() AND EstadoITSE = 1";
+		@mysqli_query($con, $update_sql);
+
 		$sql=mysqli_query($con, "SELECT l.idlicencia,l.exp_num,l.idtienda,t.numruc,l.nombre_comercial,l.vigencia_lic,l.fecha_ingreso,l.fecha_expedicion,l.condicion,l.tipo_lic,l.NumResITSE,l.EstadoITSE,expedicionITSE,vigenciaITSE FROM `licencia` l INNER JOIN tienda t ON l.idtienda = t.idtienda");
 		return $sql;
 	}

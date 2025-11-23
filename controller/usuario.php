@@ -1,6 +1,10 @@
 <?php 
 require_once "../model/Usuario.php";
 $Usuario=new Usuario();
+
+if (session_status() == PHP_SESSION_NONE) {
+	session_start();
+}
 	
 $idusuario=isset($_POST['idusuario'])? limpiar($_POST['idusuario']): "";
 $nombres=isset($_POST['nombres'])? limpiar($_POST['nombres']): "";
@@ -91,25 +95,74 @@ switch ($_GET['boton']) {
 		echo json_encode($data);
 		break;
 	case 'login':
-				$login=$Usuario->login($dni);
-				if ($row=mysqli_fetch_array($login)) {
-					$verifica=password_verify($contrasena, $row['contrasena']);
-					if ($verifica) {
-						session_start();
-						$_SESSION['nombres']=$row['nombres'];
-						$_SESSION['estado']=$row['condicion'];
-						if ($row['condicion']=='1') {
-							echo "3";
-						}else{
-							echo "4";
-						}
+			// Implementar control de intentos en sesión (3 intentos, bloqueo por 45 segundos)
+			$max_attempts = 3;
+			$lock_seconds = 45;
+
+			// Verificar bloqueo activo
+			if (isset($_SESSION['login_lock']) && $_SESSION['login_lock'] > time()) {
+				$remaining = $_SESSION['login_lock'] - time();
+				// Código 7 indica bloqueo temporal, enviamos también segundos restantes
+				echo "7|" . $remaining;
+				break;
+			}
+
+			$login=$Usuario->login($dni);
+			if ($row=mysqli_fetch_array($login)) {
+				$verifica=password_verify($contrasena, $row['contrasena']);
+				if ($verifica) {
+					// Login exitoso: resetear contadores
+					unset($_SESSION['login_attempts']);
+					unset($_SESSION['login_lock']);
+					$_SESSION['nombres']=$row['nombres'];
+					$_SESSION['estado']=$row['condicion'];
+					if ($row['condicion']=='1') {
+						echo "3"; // login correcto y activo
 					}else{
-						echo "5";
+						echo "4"; // login correcto pero condicional
 					}
-				}else{
-					echo "6";
+				} else {
+					// Contraseña incorrecta: incrementar intentos
+					if (!isset($_SESSION['login_attempts'])) $_SESSION['login_attempts'] = 0;
+					$_SESSION['login_attempts']++;
+					$attempts_left = $max_attempts - $_SESSION['login_attempts'];
+					if ($_SESSION['login_attempts'] >= $max_attempts) {
+						// Bloquear
+						$_SESSION['login_lock'] = time() + $lock_seconds;
+						unset($_SESSION['login_attempts']);
+						// Devolver código bloqueo con segundos
+						echo "7|" . $lock_seconds;
+					} else {
+						// Devolver código contraseña incorrecta y cuantos intentos quedan
+						echo "5|" . $attempts_left;
+					}
 				}
+			} else {
+				// Usuario no encontrado: tratar como intento fallido también
+				if (!isset($_SESSION['login_attempts'])) $_SESSION['login_attempts'] = 0;
+				$_SESSION['login_attempts']++;
+				$attempts_left = $max_attempts - $_SESSION['login_attempts'];
+				if ($_SESSION['login_attempts'] >= $max_attempts) {
+					// Bloquear
+					$_SESSION['login_lock'] = time() + $lock_seconds;
+					unset($_SESSION['login_attempts']);
+					// Devolver código bloqueo con segundos
+					echo "7|" . $lock_seconds;
+				} else {
+					// Devolver código de intento fallido y cuantos intentos quedan
+					echo "5|" . $attempts_left;
+				}
+			}
 		break;
+	case 'check_lock':
+			// Devuelve estado de bloqueo de login: 7|seconds o 0
+			if (isset($_SESSION['login_lock']) && $_SESSION['login_lock'] > time()) {
+				$remaining = $_SESSION['login_lock'] - time();
+				echo "7|" . $remaining;
+			} else {
+				echo "0";
+			}
+			break;
 	case 'cerrar':
 		session_start();
 		foreach ($_SESSION as $index => $value) {
