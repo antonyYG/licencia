@@ -26,24 +26,12 @@
         .email-header {
             background: linear-gradient(135deg, #4a90e2, #357ABD);
             color: #ffffff;
-            text-align: center;
-            padding: 35px 20px;
-            font-size: 26px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
+            padding: 20px 20px;
         }
         .email-body {
             padding: 30px 25px;
             color: #444444;
             line-height: 1.7;
-        }
-        .email-body p {
-            margin: 12px 0;
-            font-size: 15px;
-        }
-        .highlight {
-            font-weight: bold;
-            color: #357ABD;
         }
         .box {
             background-color: #f7faff;
@@ -51,10 +39,6 @@
             padding: 15px 20px;
             margin-top: 20px;
             border-radius: 6px;
-        }
-        .box p {
-            margin: 5px 0;
-            font-size: 15px;
         }
         .warning {
             background-color: #fff4e5;
@@ -77,9 +61,20 @@
 <body>
     <div class="email-wrapper">
         <div class="email-container">
-            
+
+            <!-- Header corregido -->
             <div class="email-header">
-                Bienvenido al Sistema de licencias de funcionamiento
+                <table width="100%" cellspacing="0" cellpadding="0" style="color:#fff;">
+                    <tr>
+                        <td width="80">
+                            <img src="https://www.munichilca.gob.pe/site/wp-content/uploads/2024/03/logo-Chilca.png"
+                                 alt="Logo" width="70" style="display:block;">
+                        </td>
+                        <td style="padding-left:10px; font-size:22px; font-weight:bold;">
+                            Bienvenido al Sistema de Licencias de Funcionamiento
+                        </td>
+                    </tr>
+                </table>
             </div>
 
             <div class="email-body">
@@ -88,12 +83,12 @@
                 <p>Tu cuenta ha sido creada exitosamente. Estos son tus datos de acceso:</p>
 
                 <div class="box">
-                    <p><span class="highlight">Nombre:</span> {{nombre}}</p>
-                    <p><span class="highlight">DNI:</span> {{dni}}</p>
-                    <p><span class="highlight">Clave Temporal:</span> {{clave}}</p>
-                    <p><span class="highlight">Correo:</span> {{correo}}</p>
-                    <p><span class="highlight">Dirección:</span> {{direccion}}</p>
-                    <p><span class="highlight">Tipo de usuario:</span> {{tipo_usuario}}</p>
+                    <p><strong>Nombre:</strong> {{nombre}}</p>
+                    <p><strong>DNI:</strong> {{dni}}</p>
+                    <p><strong>Clave Temporal:</strong> {{clave}}</p>
+                    <p><strong>Correo:</strong> {{correo}}</p>
+                    <p><strong>Dirección:</strong> {{direccion}}</p>
+                    <p><strong>Tipo de usuario:</strong> {{tipo_usuario}}</p>
                 </div>
 
                 <div class="warning">
