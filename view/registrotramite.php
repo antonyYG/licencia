@@ -106,13 +106,17 @@
 					</div>
 					<div class="form-row">
 						<div class="col-md-4 mb-3">
-							<label for="validationTooltip03" style="color: black">Tipo de Anuncio</label>
-							<input type="text" class="form-control" id="fechexpedicion" name="fechexpedicion" placeholder="Ingresar Tipo de Anuncio">
+							<label for="validationTooltip03" style="color: black">Nivel de riesgo</label>
+							<select class="form-control" id="nivel_riesgo" name="nivel_riesgo">
+								<option value="">Seleccionar nivel</option>
+								<option value="MODERADO">MODERADO</option>
+								<option value="ALTO">ALTO</option>
+								<option value="MUY ALTO">MUY ALTO</option>
+							</select>
 						</div>
                         <div class="col-md-4 mb-3">
                             <label for="validationTooltip04" style="color: black">N° de Resolución</label>
-                            <input type="text" class="form-control" id="numresolucion" name="numresolucion" placeholder="Solo números. Se autocompletará con: -2025-GDET-MPCH" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
-                            <small class="form-text text-muted">Se autocompletará con: -2025-GDET-MPCH</small>
+							<input type="text" class="form-control" id="numresolucion" name="numresolucion" placeholder="Solo Numeros" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
                         </div>
 						<div class="col-md-4 mb-3">
 							<label for="validationTooltip04" style="color: black">Tipo de Licencia</label>
@@ -142,8 +146,7 @@
 					<div class="form-row">
                         <div class="col-md-4 mb-3">
                             <label for="validationTooltip03" style="color: black">Número Resolución ITSE</label>
-                            <input type="text" class="form-control" id="numresolucion_itse" name="numresolucion_itse" placeholder="Solo números. Se autocompletará con: -2025-GDE-ODC-MPCH" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
-                            <small class="form-text text-muted">Se autocompletará con: -2025-GDE-ODC-MPCH</small>
+							<input type="text" class="form-control" id="numresolucion_itse" name="numresolucion_itse" placeholder="Solo Numeros" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
                         </div>
 					</div>
 					<div class="form-row">

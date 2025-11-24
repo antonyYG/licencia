@@ -33,7 +33,7 @@ if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
     $pdf->SetFont('Arial', 'B', 15);
     $pdf->SetXY(60, 90);
     $pdf->SetTextColor(255, 255, 255);
-    $pdf->Cell(90, 6, utf8_decode('N° ' . $resulta['NumResITSE'] . '-' . date('Y') . '-GDE-ODC-MPCH'), 0, 1, 'C', $pdf->Image('../../files/img/relleno.jpg', 57, 89, 96, 8));
+    $pdf->Cell(90, 6, utf8_decode('N° ' . $resulta['NumResITSE'] . '-' . date('Y') . '-MDCH-GDE-ODC'), 0, 1, 'C', $pdf->Image('../../files/img/relleno.jpg', 57, 89, 96, 8));
 
     // Otorgado a
     $pdf->SetTextColor(0, 0, 0);

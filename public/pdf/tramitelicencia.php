@@ -41,6 +41,7 @@ $tramite = mysqli_query($conexion, "
         l.NumResITSE,
         l.expedicionITSE,
         l.vigenciaITSE
+        ,l.nivel_riesgo
     FROM licencia l
     INNER JOIN tienda t ON l.idtienda = t.idtienda
     INNER JOIN giro g ON l.idgiro = g.idgiro
@@ -78,7 +79,7 @@ $pdf->SetFont('Arial','B',15);
 $pdf->SetXY(60,90);
 $pdf->SetTextColor(255,255,255); // color del texto
 //$pdf->SetFillColor(255,0,0); // relleno de la celda
-$pdf->Cell(90,6,utf8_decode('N° '.$resulta['num_tipolic'].'-'.date('Y').'-GDE-MDCH'),0,1,'C',$pdf->Image('../../files/img/relleno.jpg', 57, 89,96,8)); 
+$pdf->Cell(90,6,utf8_decode('N° '.$resulta['num_tipolic'].'-'.date('Y').'-MDCH-GDET'),0,1,'C',$pdf->Image('../../files/img/relleno.jpg', 57, 89,96,8)); 
 
 $pdf->SetTextColor(0,0,0);
 $pdf->SetXY(85,102);
@@ -91,20 +92,21 @@ $pdf->SetXY(28,112);
 $pdf->Cell(160,20,'',1,1);
 
 if (strlen(strtoupper(utf8_decode($resulta['nombres_per'].' '.$resulta['apellidop_per'].' '.$resulta['apellidom_per'])))<='30') {
-	$pdf->SetXY(48,118);
-	$pdf->Cell(128,6,strtoupper(utf8_decode($resulta['nombres_per'].' '.$resulta['apellidop_per'].' '.$resulta['apellidom_per'])),0,1,'C');
-}else{
-	$pdf->SetXY(52,115);
-	$pdf->MultiCell(120,6,strtoupper(utf8_decode($resulta['nombres_per'].' '.$resulta['apellidop_per'].' '.$resulta['apellidom_per'])),0,'C',0);
+    $pdf->SetXY(48,118);
+    $pdf->Cell(128,6,strtoupper(utf8_decode($resulta['nombres_per'].' '.$resulta['apellidop_per'].' '.$resulta['apellidom_per'])),0,1,'C');
+} else {
+    $pdf->SetXY(52,115);
+    $pdf->MultiCell(120,6,strtoupper(utf8_decode($resulta['nombres_per'].' '.$resulta['apellidop_per'].' '.$resulta['apellidom_per'])),0,'C',0);
 }
 
+// Diseño: etiquetas en negrita a la izquierda, valores a la derecha (siguiendo diseño provisto)
 $pdf->SetFont('Arial','B',8);
 $pdf->SetXY(32,136);
-$pdf->Cell(12,4,utf8_decode('EXP. N:'),1,1,'L');
+$pdf->Cell(12,4,utf8_decode('EXP. N:'),1,0,'L');
 $pdf->SetXY(87,136);
-$pdf->Cell(47,4,utf8_decode('MOTIVO:'),1,1,'L');
+$pdf->Cell(47,4,utf8_decode('MOTIVO:'),1,0,'L');
 $pdf->SetXY(134,136);
-$pdf->Cell(47,4,utf8_decode('APERTURA:'),1,1,'L');
+$pdf->Cell(47,4,utf8_decode('APERTURA:'),1,0,'L');
 
 $pdf->SetXY(32,146);
 $pdf->Cell(52,4,utf8_decode('Nº DE RUC'),0,1,'L');
@@ -118,8 +120,6 @@ $pdf->SetXY(32,166);
 $pdf->Cell(52,4,utf8_decode('AREA DEL LOCAL'),0,1,'L');
 $pdf->SetXY(32,171);
 $pdf->Cell(52,4,utf8_decode('Nº DE RECIBO DE TESORERIA'),0,1,'L');
-$pdf->SetXY(32,176);
-$pdf->Cell(52,4,utf8_decode('TIPO DE ANUNCIO'),0,1,'L');
 $pdf->SetXY(32,181);
 $pdf->Cell(52,4,utf8_decode('Nº DE RESOLUCIÓN DE LICENCIA'),0,1,'L');
 $pdf->SetXY(32,186);
@@ -150,23 +150,19 @@ $pdf->SetXY(84,166);
 $pdf->Cell(96,4,utf8_decode(': '.$resulta['area_tienda']),0,1,'L');
 $pdf->SetXY(84,171);
 $pdf->Cell(96,4,utf8_decode(': '.$resulta['numrecibo_tesoreria']),0,1,'L');
-$pdf->SetXY(84,176);
-$pdf->Cell(96,4,utf8_decode(': '.$resulta['fecha_expedicion']),0,1,'L');
 $pdf->SetXY(84,181);
-$pdf->Cell(96,4,utf8_decode(': N° '.$resulta['num_resolucion'].'-2025-GDET-MPCH'),0,1,'L');
+$pdf->Cell(96,4,utf8_decode(': N° '.$resulta['num_resolucion'].'-'.date('Y').'-MDCH-GDET'),0,1,'L');
 $pdf->SetXY(84,186);
 $pdf->Cell(96,4,utf8_decode(': '.$resulta['fecha_ingreso']),0,1,'L');
 $pdf->SetXY(84,191);
-$pdf->Cell(96, 4, utf8_decode(': ' . ($resulta['vigencia_lic'] === "0001-01-01" ? "Indeterminado" : $resulta['vigencia_lic'])), 0, 1, 'L');
-$pdf->SetXY(84,196);
-$pdf->Cell(90,4,utf8_decode(': N° '.$resulta['NumResITSE'].'-2025-GDE-ODC-MPCH'),0,1,'L');
-$pdf->SetXY(84,201);
-$pdf->Cell(90,4,utf8_decode(': '.$resulta['expedicionITSE']),0,1,'L');
-$pdf->SetXY(84,206);
-$pdf->Cell(90,4,utf8_decode(': '.$resulta['vigenciaITSE']),0,1,'L');
-$pdf->SetXY(84, 211);
+// Mostrar "INDETERMINADA" cuando tipo_lic == '1', si no mostrar la fecha de vigencia (o '-' si no existe)
+if (isset($resulta['tipo_lic']) && $resulta['tipo_lic'] == '1') {
+    $vigencia_text = 'INDETERMINADA';
+} else {
+    $vigencia_text = (!empty($resulta['vigencia_lic']) && $resulta['vigencia_lic'] !== '0001-01-01') ? $resulta['vigencia_lic'] : '-';
+}
+$pdf->Cell(96, 4, utf8_decode(': ' . $vigencia_text), 0, 1, 'L');
 
-// Obtener la fecha actual
 $fecha_actual = new DateTime();
 
 // Obtener las fechas de expedición y vigencia del ITSE
@@ -183,7 +179,7 @@ $dias_totales = $diferencia->days;
 $dias_restantes = $vigencia_itse->diff($fecha_actual)->days;
 
 // Verificar si la fecha de vigencia ya ha pasado
-if ($dias_restantes < 0) {
+if ($fecha_actual > $vigencia_itse) {
     $dias_restantes = 0;
 }
 
@@ -200,7 +196,23 @@ if ($dias_restantes > 0) {
     $resultado .= $dias_restantes . ' día(s)';
 }
 
+$pdf->SetXY(84,196);
+$pdf->Cell(90,4,utf8_decode(': N° '.$resulta['NumResITSE'].'-'.date('Y').'-MDCH-GDE-ODC'),0,1,'L');
+
+$pdf->SetXY(84,201);
+$pdf->Cell(90,4,utf8_decode(': '.$resulta['expedicionITSE']),0,1,'L');
+
+$pdf->SetXY(84,206);
+$pdf->Cell(90,4,utf8_decode(': '.$resulta['vigenciaITSE']),0,1,'L');
+
+$pdf->SetXY(84,211);
 $pdf->Cell(90, 4,utf8_decode(': ' . $resultado), 0, 1, 'L');
+
+// Mostrar Nivel de Riesgo al final (después de Vigencia ITSE)
+$pdf->SetXY(32, 216);
+$pdf->Cell(52,4,utf8_decode('NIVEL DE RIESGO'),0,1,'L');
+$pdf->SetXY(84,216);
+$pdf->Cell(90,4,utf8_decode(': '. ($resulta['nivel_riesgo'] ?: '-')),0,1,'L');
 
 
 
@@ -248,8 +260,8 @@ try {
     $mail->SMTPDebug = 0;
     $mail->Host       = 'smtp.gmail.com'; // agregar host SMTP aquí
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'cgrupo12@gmail.com'; // agregar usuario SMTP aquí
-    $mail->Password   = 'kmvuxrrpgxtuqhdi'; // agregar contraseña SMTP aquí
+    $mail->Username   = 'TU CORREO'; // agregar usuario SMTP aquí
+    $mail->Password   = 'TU CONTRASEÑA'; // agregar contraseña SMTP aquí
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // agregar tipo de encriptación SMTP aquí
     $mail->Port       = 587; // agregar puerto SMTP aquí
 
@@ -265,7 +277,7 @@ try {
     // Correo del ciudadano
     $mail->addAddress($resulta['correo']);  
 
-    $mail->setFrom('cgrupo12@gmail.com', 'Municipalidad Distrital de Chilca');
+    $mail->setFrom('TU CORREO', 'Municipalidad Distrital de Chilca');  //NOTA: Cambiar por su correo
     $mail->Subject = 'Licencia de Funcionamiento Entregada';
     $mail->isHTML(true);
 

@@ -49,15 +49,15 @@ switch ($_GET['boton']) {
 	</tr>
 	<tr>
 		<th>VIGENCIA</th>
-		<td>' . $lista['vigencia_lic'] . '</td>
+		<td>' . ((isset($lista['vigencia_lic']) && trim($lista['vigencia_lic']) !== '' && $lista['vigencia_lic'] !== '0001-01-01') ? $lista['vigencia_lic'] : 'INDETERMINADA') . '</td>
 	</tr>
 	<tr>
 		<th>FECHA DE EXPEDICIÓN</th>
 		<td>' . $lista['fecha_ingreso'] . '</td>
 	</tr>
 	<tr>
-		<th>Tipo anuncio</th>
-		<td>' . $lista['fecha_expedicion'] . '</td>
+		<th>NIVEL DE RIESGO</th>
+		<td>' . ((isset($lista['nivel_riesgo']) && trim($lista['nivel_riesgo']) !== '') ? $lista['nivel_riesgo'] : '-') . '</td>
 	</tr>
 	<tr>
 		<th>N° DE RESOLUCIÓN DE LICENCIA</th>

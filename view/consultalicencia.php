@@ -33,8 +33,8 @@
 				<video id="preview" width="80%"></video>
              </div>
              <div class="col-md-4"> 
-             	<form>
-             		<input type="text" name="idtramite" id="idtramite" class="form-control">
+              	<form>
+             		<input type="text" name="idtramite" id="idtramite" class="form-control" placeholder="Escribir N° de Expediente">
              		<button type="button" class="btn btn-success btn-raised" id="btnescan"><i class="zmdi zmdi-search-for"></i>	</button>
              	</form>   
 				

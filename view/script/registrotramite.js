@@ -47,33 +47,42 @@ $(document).ready(function(){
 	$("#btn_registrar").click(function(e){
 	e.preventDefault();
 	// NOTA: serializaré después de preparar los valores finales
-	var nombrecomercial = $("#nombrecomercial").val();
-	var giro = $("#giro").val();
-	var recibotes = $("#recibotes").val();
-	var vigencia = $("#vigencia").val();
-	var fechingreso = $("#fechingreso").val();
-	var fechexpedicion = $("#fechexpedicion").val();
-	var expediente = $("#expediente").val();
-	var numresolucion = $("#numresolucion").val();
-	var idtienda = $("#idtiendass").val();
-	var numdocval = $("#numdoc").val();
-	var numresolucion_itse = $("#numresolucion_itse").val(); // Nuevo campo agregado
-	var expedicion_itse = $("#expedicionitse").val(); // Nuevo campo agregado
-	var vigencia_itse = $("#vigenciaitse").val(); // Nuevo campo agregado
-	var tipolicencia = document.getElementById('tipolicencia');
+	var nombrecomercial = $("#nombrecomercial").val() || "";
+	var giro = $("#giro").val() || "";
+	var recibotes = $("#recibotes").val() || "";
+	var vigencia = $("#vigencia").val() || "";
+	var fechingreso = $("#fechingreso").val() || "";
+	var nivel_riesgo = $("#nivel_riesgo").val() || "";
+	var expediente = $("#expediente").val() || "";
+	var numresolucion = $("#numresolucion").val() || "";
+	var idtienda = $("#idtiendass").val() || "";
+	var numdocval = $("#numdoc").val() || "";
+	var numresolucion_itse = $("#numresolucion_itse").val() || ""; // Nuevo campo agregado
+	var expedicion_itse = $("#expedicionitse").val() || ""; // Nuevo campo agregado
+	var vigencia_itse = $("#vigenciaitse").val() || ""; // Nuevo campo agregado
+	var tipolicenciaEl = document.getElementById('tipolicencia');
+	var tipolicencia = tipolicenciaEl ? tipolicenciaEl.value : "";
 
     // Validaciones estrictas: solo dígitos
     if (recibotes && !isDigits(recibotes)) { return toastr.error("N° recibo Tesorería debe ser numérico","Licencia"); }
     if (numresolucion && !isDigits(numresolucion)) { return toastr.error("N° resolución debe ser numérico","Licencia"); }
     if (numresolucion_itse && !isDigits(numresolucion_itse)) { return toastr.error("N° resolución ITSE debe ser numérico","Licencia"); }
 
-	// Validación de fechas ITSE: vigencia posterior a expedición
+	// Validación de fechas ITSE: vigencia posterior a expedición (si se proporcionan)
 	if (expedicion_itse && vigencia_itse && !isAfter(vigencia_itse, expedicion_itse)){
 		return toastr.error("Vigencia ITSE debe ser posterior a Expedición ITSE","Licencia");
 	}
 
+	// Si se empieza a completar algún campo ITSE, exigir que los 3 estén presentes
+	var anyITSE = (numresolucion_itse.length > 0) || (expedicion_itse.length > 0) || (vigencia_itse.length > 0);
+	if (anyITSE) {
+		if (!numresolucion_itse || !expedicion_itse || !vigencia_itse) {
+			return toastr.info("Si registra datos ITSE, complete Nº Resolución, Expedición y Vigencia","Licencia");
+		}
+	}
+
 	// Reglas de tipo de licencia
-	var tipoLicVal = tipolicencia.value;
+	var tipoLicVal = tipolicencia;
     if (tipoLicVal === "2"){
         // Temporal: vigencia requerida
         if (!vigencia || vigencia.length === 0){
@@ -93,19 +102,26 @@ $(document).ready(function(){
 		giro.length == 0 ||
 		recibotes.length == 0 ||
 		fechingreso.length == 0 ||
-		fechexpedicion.length == 0 ||
 		expediente.length == 0 ||
-		numresolucion.length == 0 ||
-		numresolucion_itse.length == 0 || 
-		expedicion_itse.length == 0 || 
-		vigencia_itse.length == 0 
+		numresolucion.length == 0
 	) {
+			if (!nivel_riesgo || nivel_riesgo.length === 0) { return toastr.info("Seleccione Nivel de riesgo","Licencia"); }
 		toastr.info("Ingresar los datos respectivos","Licencia");
-	} else if (tipolicencia.value == 0 || tipolicencia.value == "") {
+		} else if (tipolicencia == 0 || tipolicencia == "") {
 		toastr.info("Seleccionar el tipo de Licencia","Licencia");
     } else {
-        // Serializar datos exactamente como se ingresan
-        var datos = $("#form_parttramite").serialize();
+		// Asegurar que existe el campo `fechexpedicion` que el servidor espera
+		if ($('input[name="fechexpedicion"]').length) {
+			$('input[name="fechexpedicion"]').val(fechingreso);
+		} else {
+			$("#form_parttramite").append('<input type="hidden" name="fechexpedicion" value="' + fechingreso + '" />');
+		}
+
+		// Log temporal para depuración (remover en producción)
+		console.log('RegistroTramite datos:', { idtienda: idtienda, giro: giro, numdoc: numdocval, fechingreso: fechingreso, fechexpedicion: fechingreso, numresolucion: numresolucion, nombrecomercial: nombrecomercial });
+
+		// Serializar datos exactamente como se ingresan
+		var datos = $("#form_parttramite").serialize();
 
 		$.ajax({
 				"url": "../controller/registrotramite.php?boton=insertar",

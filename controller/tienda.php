@@ -35,6 +35,11 @@ switch ($_GET['boton']) {
         mysqli_free_result($lista);
         break;
     case 'insertar':
+        // Validación servidor: celular solo dígitos y máximo 9 cuando se provee
+        if (!empty($celular) && (!ctype_digit($celular) || strlen($celular) > 9)) {
+            echo "0";
+            exit;
+        }
         $inserta = $Tiendas->insertar($ruc, $dni, $nombres, $apellidop, $apellidom, $ubicacion, $area, $latitud, $longitud, $zona, $celular,$correo);
         if ($inserta) {
             echo "1";
@@ -43,6 +48,11 @@ switch ($_GET['boton']) {
         }
         break;
     case 'editar':
+        // Validación servidor: celular solo dígitos y máximo 9 cuando se provee
+        if (!empty($celular) && (!ctype_digit($celular) || strlen($celular) > 9)) {
+            echo "0";
+            exit;
+        }
         $edita = $Tiendas->editar($idtienda, $ruc, $dni, $nombres, $apellidop, $apellidom, $ubicacion, $area, $latitud, $longitud, $zona, $celular,$correo);
         if ($edita) {
             echo "1";

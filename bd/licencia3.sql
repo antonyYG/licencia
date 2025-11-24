@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-11-2025 a las 05:28:24
+-- Tiempo de generación: 24-11-2025 a las 03:28:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -37,99 +37,80 @@ CREATE TABLE `giro` (
 --
 
 INSERT INTO `giro` (`idgiro`, `nombregiro`) VALUES
-(1, 'AGENTE BANCARIO'),
-(2, 'ALMACEN'),
-(3, 'ALMACEN Y VENTA DE TRUCHA'),
-(4, 'ALQUILER'),
-(5, 'AUTOSERVICIO'),
-(6, 'BARBERIA'),
-(7, 'BARBER SHOP'),
-(8, 'BAZAR'),
-(9, 'BODEGA'),
-(10, 'BOTICA'),
-(11, 'CABINAS DE INTERNET'),
-(12, 'CAFETERIA'),
-(13, 'CARPINTERIA'),
-(14, 'CASA APUESTA DEPORTIVA'),
-(15, 'CASA DE APUESTAS DEPORTIVAS'),
-(16, 'CASA PRESTAMO'),
-(17, 'CASA DE EMPEÑO'),
-(18, 'CENTRO FISIOTERAPIA'),
-(19, 'CENTRO MEDICO'),
-(20, 'CENTRO DE FAENAMIENTO DE AVES'),
-(21, 'CERRAJERIA'),
-(22, 'CEVICHERIA'),
-(23, 'CHIFA'),
-(24, 'COMPRA Y VENTA LANA'),
-(25, 'CONFECCION'),
-(26, 'CONFITERIA'),
-(27, 'CONSULTORIO DENTAL'),
-(28, 'CONSULTORIO MEDICO'),
-(29, 'DISTRIBUIDORA'),
-(30, 'DROGUERIA'),
-(31, 'INS. EDUCATIVA / INSTITUCIÓN EDUCATIVA (UNIFICADO A: INSTITUCION EDUCATIVA)'),
-(32, 'ELABORACION PROD. LACTEOS'),
-(33, 'ENTIDAD FINANCIERA'),
-(34, 'ESTACION DE RUTA'),
-(35, 'EXHIBICION DE VEHICULO'),
-(36, 'FARMACIA'),
-(37, 'FERRETERIA'),
-(38, 'FUENTE DE SODA'),
-(39, 'FOTOCOPIAS'),
-(40, 'GIMNASIO'),
-(41, 'GRASS SINTETICO'),
-(42, 'GRIFO'),
-(43, 'HOSPEDAJE'),
-(44, 'IMPRESIONES (UNIFICANDO IMPRESIÓN)'),
-(45, 'INTERNET'),
-(46, 'JUEGO MECANICO'),
-(47, 'JUGUERIA'),
-(48, 'LAVADERO DE VEHICULO'),
-(49, 'LIBRERIA'),
-(50, 'LLANTERIA'),
-(51, 'LOCAL DE EVENTOS'),
-(52, 'LUBRICENTRO'),
-(53, 'MADEDERA'),
-(54, 'MANTENIMIENTO COMPUTADORA'),
-(55, 'MERCADO'),
-(56, 'MERCERIA'),
-(57, 'MARISQUERIA'),
-(58, 'MECANICA'),
-(59, 'MECANICA DE MOTOS'),
-(60, 'MINIMARKET'),
-(61, 'OFICINA ADMINISTRATIVA'),
-(62, 'PANADERIA'),
-(63, 'PELUQUERIA'),
-(64, 'PET SHOP'),
-(65, 'PIÑATERIA'),
-(66, 'PIZZERIA'),
-(67, 'PLAYA DE ESTACIONAMIENTO'),
-(68, 'POLLERIA'),
-(69, 'REPARACION DE TUBOS DE ESCAPE'),
-(70, 'RESTAURANTE'),
-(71, 'SALON DE BELLEZA'),
-(72, 'SASTRERIA'),
-(73, 'SERV. TEC. LINEA BLANCA'),
-(74, 'SOLDADURA'),
-(75, 'TALLER DE PLANCHADO Y PINTURA'),
-(76, 'TALLER DE REPARACION RADIO Y TV'),
-(77, 'TAPICERIA'),
-(78, 'TAPIZADO DE MOTOS'),
-(79, 'TORNERIA'),
-(80, 'VENTA DE ART. FERRETERIA'),
-(81, 'VENTA ACCES. CELULAR'),
-(82, 'VENTA DE ROPA'),
-(83, 'VENTA DE LUBRICANTES'),
-(84, 'VENTA DE PRODUCTOS DE PANADERIA'),
-(85, 'VENTA DE FRUTOS SECOS'),
-(86, 'VENTA DE GLP ENVASADO'),
-(87, 'VENTA DE GRANOS'),
-(88, 'VENTA DE ABARROTES'),
-(89, 'VENTA DE MELAMINE'),
-(90, 'VENTA DE ACCESORIOS PARA VEHICULO'),
-(91, 'VENTA VARIOS'),
-(92, 'VETERINARIA'),
-(93, 'VIDRIERIA');
+(3, 'ALQUILER'),
+(4, 'AUTOSERVICIO'),
+(5, 'BARBERIA'),
+(6, 'BAZAR'),
+(7, 'BODEGA'),
+(8, 'BOTICA'),
+(9, 'CABINAS DE INTERNET'),
+(10, 'CAFERETERIA'),
+(11, 'CARPINTERIA'),
+(12, 'CASA APUESTA DEPORTIVA'),
+(13, 'CASA PRESTAMO'),
+(14, 'CENTRO FISIOTERAPIA'),
+(15, 'CENTRO MEDICO'),
+(16, 'CERRAJERIA'),
+(17, 'CEVICHERIA'),
+(18, 'COMPRA Y VENTA LANA'),
+(19, 'CONFECCION'),
+(20, 'CONFITERIA'),
+(21, 'CONSULTORIO DENTAL'),
+(22, 'CONSULTORIO MEDICO'),
+(23, 'DISTRIBUIDORA'),
+(24, 'DROGUERIA'),
+(25, 'INS. EDUCATIVA'),
+(26, 'ELABORACION PROD. LACTEOS'),
+(27, 'ENTIDAD FINANCIERA'),
+(28, 'ESTACION DE RUTA'),
+(29, 'ESHIBICON DE VEHICULO'),
+(30, 'FARMACIA'),
+(31, 'FUENTE DE SODA'),
+(32, 'GIMNASIO'),
+(33, 'GRASS SINTETICO'),
+(34, 'GRIFO'),
+(35, 'HOSPEDAJE'),
+(36, 'IMPRESIONES'),
+(37, 'JUEGO MECANICO'),
+(38, 'JUGUERIA'),
+(39, 'LAVADERO DE VEHICULO'),
+(40, 'LIBRERÍA'),
+(41, 'LOCAL DE EVENTOS'),
+(42, 'LUBRICENTRO'),
+(43, 'MADEDERA'),
+(44, 'MANTENIMIENTO COMPUTADORA'),
+(45, 'MECANICA'),
+(46, 'MERCADO'),
+(47, 'MERCERIA'),
+(48, 'MINIMARKET'),
+(49, 'OFICINA ADMINISTRATIVA'),
+(50, 'PANADERIA'),
+(51, 'PELUQUERIA'),
+(52, 'PET SHOP'),
+(53, 'PIÑATERIA'),
+(54, 'PIZZERIA'),
+(55, 'PLASTIQUERIA'),
+(56, 'PLAYA DE ESTACIONAMIENTO'),
+(57, 'POLLERIA'),
+(58, 'RESTAURANTE'),
+(59, 'SALON DE BELLEZA'),
+(60, 'SASTRERIA'),
+(61, 'SOLDADURA'),
+(62, 'SERV. TEC. LINEA BLANCA'),
+(63, 'VENTA DE ART. FERRETERIA'),
+(64, 'VENTA ACCES. CELULAR'),
+(65, 'VIDRIERIA'),
+(66, 'VETERINARIA'),
+(67, 'VENTA DE ROPA'),
+(68, 'VENTA DE LUBRICANTES'),
+(69, 'VENTA DE PRODUCTOS DE PANADERIA'),
+(70, 'VENTA DE FRUTOS SECOS'),
+(71, 'VENTA GLP ENVASADO'),
+(72, 'VENTA DE GRANOS'),
+(73, 'VENTA DE ABARROTES'),
+(74, 'VENTA VARIOS'),
+(76, 'HOLAA'),
+(77, 'ALMACEN');
 
 -- --------------------------------------------------------
 
@@ -169,7 +150,8 @@ CREATE TABLE `licencia` (
   `NumResITSE` varchar(90) NOT NULL,
   `EstadoITSE` tinyint(1) DEFAULT 1,
   `expedicionITSE` date NOT NULL,
-  `vigenciaITSE` date NOT NULL
+  `vigenciaITSE` date NOT NULL,
+  `nivel_riesgo` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -190,7 +172,8 @@ CREATE TABLE `tienda` (
   `latitud` decimal(10,7) DEFAULT NULL,
   `longitud` decimal(10,7) DEFAULT NULL,
   `celular` varchar(9) DEFAULT NULL,
-  `id_zona` int(11) DEFAULT NULL
+  `id_zona` int(11) DEFAULT NULL,
+  `correo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -217,8 +200,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`idpersona`, `nombres`, `apellidop`, `apellidom`, `direccion`, `dni`, `correo`, `contrasena`, `condicion`, `tipo_usuario`) VALUES
-(1, 'Andriu', 'Goya', 'Acosta', 'Jron Rosa Fung Pineda', '60932604', 'andriu@gmail.com', '$2y$10$Ekvtr3uMW6difqANY4CdPeIVZdPvbkd0oexLU9uowlbEiHghRMlJO', 1, 'Administrador'),
-(3, 'Antony', 'Yupanqui', 'Gallardo', 'AV S/N', '12345678', 'antony@gmail.com', '$2y$10$XOiXJe3iDdD5VLDLAtjI6ORJw3ygb735VINTR2Ic3dZOkMs6aEgYu', 1, 'Administrador');
+(1, 'Administrador', 'Licencias de Funcionamiento', 'Chilca', 'Municipalidad Distrital de Chilca', '12345678', 'andriu@gmail.com', '$2y$10$2.kZTLCdXjdRB0IJ49E76exb5ojzkY7V1aIWu9oJ6G3T3b4EhWhXS', 1, 'Administrador');
 
 -- --------------------------------------------------------
 
@@ -236,25 +218,18 @@ CREATE TABLE `zonas` (
 --
 
 INSERT INTO `zonas` (`id_zona`, `nombre_zona`) VALUES
-(1, '9 de Octubre'),
-(2, 'Ancalá'),
-(3, 'Auquimarca'),
-(4, 'Auray'),
-(5, 'Azapampa'),
-(6, 'Azapampa Este'),
-(7, 'Azapampa Oeste'),
-(8, 'Barrio San José'),
-(9, 'Chilca Cercado'),
-(10, 'Cooperativa Túpac Amaru'),
-(11, 'Coto-Coto'),
-(12, 'La Esperanza'),
-(13, 'Llamus'),
-(14, 'Ocopilla'),
-(15, 'Pishupyacun'),
-(16, 'Progreso'),
-(17, 'Santísima Cruz de Chilca'),
-(18, 'Señor de los Milagros'),
-(19, 'Chilca');
+(1, 'Mirador Peñaloza'),
+(2, 'Nueva Argentina'),
+(3, 'Hualashuata Nueva Generación'),
+(4, 'Pichkana'),
+(5, 'Buenos Aires'),
+(6, 'Vista Alegre'),
+(7, 'Atalaya'),
+(8, 'Héroes de Azapampa'),
+(9, 'Bosques de Azapampa'),
+(10, 'Villa Retama'),
+(11, 'Peje'),
+(12, 'Los Jazmines');
 
 --
 -- Índices para tablas volcadas
@@ -309,7 +284,7 @@ ALTER TABLE `zonas`
 -- AUTO_INCREMENT de la tabla `giro`
 --
 ALTER TABLE `giro`
-  MODIFY `idgiro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
+  MODIFY `idgiro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT de la tabla `intervenciones`
@@ -321,25 +296,25 @@ ALTER TABLE `intervenciones`
 -- AUTO_INCREMENT de la tabla `licencia`
 --
 ALTER TABLE `licencia`
-  MODIFY `idlicencia` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idlicencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `tienda`
 --
 ALTER TABLE `tienda`
-  MODIFY `idtienda` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idtienda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idpersona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idpersona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `zonas`
 --
 ALTER TABLE `zonas`
-  MODIFY `id_zona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_zona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas

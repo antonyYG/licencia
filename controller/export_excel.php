@@ -195,24 +195,14 @@ if ($hasPhpSpreadsheet) {
     }
 
     $row = 5; // Comenzar después del logo
-    $sheet->setCellValue('A'.$row, 'REPORTE DE TIENDAS EN RANGO');
+    $sheet->setCellValue('A'.$row, 'REPORTE DE TIENDAS DE CHILCA');
     $sheet->mergeCells('A'.$row.':E'.$row);
     $sheet->getStyle('A'.$row)->getFont()->setBold(true)->setSize(14);
     $sheet->getStyle('A'.$row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
     $row += 2;
-
-    // Información del rango
-    $sheet->setCellValue('A'.$row, 'Información del rango seleccionado:');
-    $sheet->getStyle('A'.$row)->getFont()->setBold(true);
+    // Saltar directamente a la tabla principal (omitimos información del rango en el Excel)
+    // Dejar una fila en blanco
     $row++;
-    $sheet->fromArray(['Latitud Centro:', $lat], NULL, 'A'.$row);
-    $row++;
-    $sheet->fromArray(['Longitud Centro:', $lng], NULL, 'A'.$row);
-    $row++;
-    $sheet->fromArray(['Radio (metros):', $radius], NULL, 'A'.$row);
-    $row++;
-    $sheet->fromArray(['Total de tiendas encontradas:', count($tiendas)], NULL, 'A'.$row);
-    $row += 2;
 
     // Encabezados de tiendas
     $headers = ['NOMBRE COMPLETO DEL PROPIETARIO', 'NOMBRE DE LA TIENDA', 'LUGAR UBICADO', 'LICENCIA SANITARIA', 'LICENCIA DE FUNCIONAMIENTO'];

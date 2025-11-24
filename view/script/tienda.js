@@ -16,6 +16,8 @@ $(document).ready(function(){
         toastr.info("Ingresar los datos respectivos", "Tienda");
     } else if (latitud.length == 0 || longitud.length == 0) {
         toastr.info("Ingresar la latitud y longitud", "Tienda");
+    } else if (celular.length > 0 && !/^\d{1,9}$/.test(celular)) {
+        toastr.info("Celular solo números y max 9 dígitos", "Tienda");
     } else {
         $.ajax({
             "url": "../controller/tienda.php?boton=insertar",
@@ -72,7 +74,7 @@ $(document).on('click','.actualizar', function(){
 						$("#modaleditar").modal("hide");
 						tabla.ajax.reload();
 					}else{
-						toastr.error("No se pudo actualizar", "Tienda");
+                        toastr.error("No se pudo actualizar", "Tienda");
 					}
 				});
 			});

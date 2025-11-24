@@ -201,7 +201,7 @@
                 <div class="form-row">
     <div class="form-group col-md-6">
         <label for="inputcelular" style="color: black;">Celular</label>
-        <input type="text" class="form-control" id="celular" name="celular" placeholder="Ingresar Celular" maxlength="9">
+        <input type="text" class="form-control" id="celular" name="celular" placeholder="Ingresar Celular" maxlength="9" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*">
     </div>
 </div>
 
@@ -327,7 +327,7 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="inputcelular" style="color: black;">Celular</label>
-            <input type="text" class="form-control" id="celularedit" name="celular" placeholder="Ingresar Celular">
+            <input type="text" class="form-control" id="celularedit" name="celular" placeholder="Ingresar Celular" maxlength="9" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*">
         </div>
     </div>
 					<hr width="100%">

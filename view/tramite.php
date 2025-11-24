@@ -156,7 +156,7 @@ session_start();
 								<th>NOMBRE COMERCIAL</th>
 								<th>FECHA DE EXPEDICIÓN</th>
 								<th>VIGENCIA DE LICENCIA</th>
-								<th>TIPO DE ANUNCIO</th>
+                                <th>NIVEL DE RIESGO</th>
 								<th style="color: green;">ACTUALIZAR</th>
 								<th style="color: purple;">GENERAR LICENCIA</th>
 								<th style="color: brown;">TIPO DE LICENCIA</th>
@@ -172,7 +172,12 @@ session_start();
 								$trami = new RegistroTramite();
 								$lice = $trami->listartramite();
 								foreach ($lice as $row) {
-									$vigencia_lic = ($row['vigencia_lic'] === "0001-01-01" ? "Indeterminado" : $row['vigencia_lic']);
+                                    // Mostrar 'INDETERMINADA' cuando tipo_lic == '1', conservar fecha en caso contrario
+                                    if (isset($row['tipo_lic']) && $row['tipo_lic'] == '1') {
+                                        $vigencia_lic = 'INDETERMINADA';
+                                    } else {
+                                        $vigencia_lic = (!empty($row['vigencia_lic']) && $row['vigencia_lic'] !== '0001-01-01') ? $row['vigencia_lic'] : '-';
+                                    }
         					        $expedicion_itse = new DateTime($row['expedicionITSE']);
                                     $vigencia_itse = new DateTime($row['vigenciaITSE']);
                                     $hoy = new DateTime();
@@ -201,7 +206,7 @@ session_start();
 										<td><?php echo $row['nombre_comercial']; ?></td>
 										<td><?php echo $row['fecha_ingreso']; ?></td>
 										<td><?php echo $vigencia_lic; ?></td>
-										<td><?php echo $row['fecha_expedicion']; ?></td>
+                                        <td><?php echo htmlspecialchars($row['nivel_riesgo'] ?: '-'); ?></td>
 										<td>
 											<?php if ($row['condicion'] == '1') { ?>
 												<a href="editartramite.php?idtramite=<?php echo $row['idlicencia']; ?>"><button type="button" class="btn btn-primary btn-raised btn-sm"><i class="zmdi zmdi-edit"></i></button></a>

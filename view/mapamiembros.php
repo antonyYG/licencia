@@ -108,7 +108,7 @@ $BASE_URL_RESOURCES = getBaseUrlPath($PROJECT_FOLDER_NAME);
     $conn = new mysqli($servername, $username, $password, $dbname);
 
     if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
-    $sql = "SELECT t.nombres_per, t.ubic_tienda, t.latitud, t.longitud, t.celular, l.nombre_comercial, l.vigencia_lic, l.fecha_ingreso, l.fecha_expedicion, l.tipo_lic, l.condicion, l.exp_num, l.EstadoITSE FROM tienda t JOIN licencia l ON t.idtienda = l.idtienda";
+    $sql = "SELECT t.nombres_per, t.ubic_tienda, t.latitud, t.longitud, t.celular, l.nombre_comercial, l.vigencia_lic, l.fecha_ingreso, l.fecha_expedicion, l.tipo_lic, l.condicion, l.exp_num, l.EstadoITSE, l.nivel_riesgo FROM tienda t JOIN licencia l ON t.idtienda = l.idtienda";
     $result = $conn->query($sql);
     $tiendas = array();
     if ($result->num_rows > 0) {
@@ -128,7 +128,7 @@ $BASE_URL_RESOURCES = getBaseUrlPath($PROJECT_FOLDER_NAME);
         var ubicacion = "<?php echo htmlspecialchars($tienda['ubic_tienda']); ?>";
         var vigenciaLic = "<?php echo htmlspecialchars($tienda['vigencia_lic'] ? $tienda['vigencia_lic']:'sin vigencia' )?>";
         var fechaIngreso = "<?php echo htmlspecialchars($tienda['fecha_ingreso']); ?>";
-        var tipoAnuncio = "<?php echo htmlspecialchars($tienda['fecha_expedicion']); ?>";
+        var nivelRiesgo = "<?php echo htmlspecialchars(isset($tienda['nivel_riesgo']) ? $tienda['nivel_riesgo'] : ''); ?>";
         var tipoLic = "<?php echo htmlspecialchars($tienda['tipo_lic']); ?>";
         var condicion = "<?php echo htmlspecialchars($tienda['condicion']); ?>";
         var expNum = "<?php echo htmlspecialchars($tienda['exp_num']); ?>";
@@ -147,7 +147,7 @@ $BASE_URL_RESOURCES = getBaseUrlPath($PROJECT_FOLDER_NAME);
                 + "<b>Celular:</b><br>" + celular + "</span><br><br>"
                 + "<b>Vigencia de Licencia:</b><br>" + vigenciaLic + "</span><br><br>"
                 + "<b>Fecha de Expedición:</b><br>" + fechaIngreso + "</span><br><br>"
-                + "<b>Tipo de Anuncio:</b><br>" + tipoAnuncio + "</span><br><br>"
+                + "<b>Nivel de Riesgo:</b><br>" + (nivelRiesgo && nivelRiesgo.trim() !== '' ? nivelRiesgo : 'INDETERMINADA') + "</span><br><br>"
                 + "<b>Tipo de Licencia:</b><br>";
 
             if (tipoLic == "1") {

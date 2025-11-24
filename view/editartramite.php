@@ -106,13 +106,17 @@
 				</div>
 				<div class="form-row">
 					<div class="col-md-4 mb-3">
-						<label for="validationTooltip03" style="color: black">Tipo de Anuncio</label>
-						<input type="text" class="form-control" id="fechexpedicionedit" name="fechexpedicion" value="<?php echo $row['fecha_expedicion']; ?>">
+						<label for="validationTooltip03" style="color: black">Nivel de riesgo</label>
+						<select class="form-control" id="nivel_riesgo_edit" name="nivel_riesgo">
+							<option value="">Seleccionar nivel</option>
+							<option value="MODERADO" <?php echo (isset($row['nivel_riesgo']) && $row['nivel_riesgo']==='MODERADO')? 'selected': ''; ?>>MODERADO</option>
+							<option value="ALTO" <?php echo (isset($row['nivel_riesgo']) && $row['nivel_riesgo']==='ALTO')? 'selected': ''; ?>>ALTO</option>
+							<option value="MUY ALTO" <?php echo (isset($row['nivel_riesgo']) && $row['nivel_riesgo']==='MUY ALTO')? 'selected': ''; ?>>MUY ALTO</option>
+						</select>
 					</div>
                     <div class="col-md-4 mb-3">
                         <label for="validationTooltip04" style="color: black">N° de Resolución</label>
-                        <input type="text" class="form-control" id="numresolucionedit" name="numresolucion" placeholder="Solo números. Se autocompletará con: -2025-GDET-MPCH" value="<?php echo $row['num_resolucion']; ?>" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
-                        <small class="form-text text-muted">Se autocompletará con: -2025-GDET-MPCH</small>
+						<input type="text" class="form-control" id="numresolucionedit" name="numresolucion" placeholder="Solo Numeros" value="<?php echo $row['num_resolucion']; ?>" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
                     </div>
 					<div class="col-md-4 mb-3">
 						<label for="validationTooltip04" style="color: black">Estado de licencia</label>
@@ -138,8 +142,7 @@
             <div class="form-row">
                 <div class="col-md-4 mb-3">
                     <label for="validationTooltip03" style="color: black">Número Resolución ITSE</label>
-                    <input type="text" class="form-control" id="numresolucion_itse" name="numresolucion_itse" placeholder="Solo números. Se autocompletará con: -2025-GDE-ODC-MPCH" value="<?php echo $row['NumResITSE']; ?>" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
-                    <small class="form-text text-muted">Se autocompletará con: -2025-GDE-ODC-MPCH</small>
+					<input type="text" class="form-control" id="numresolucion_itse" name="numresolucion_itse" placeholder="Solo Numeros" value="<?php echo $row['NumResITSE']; ?>" onkeypress="return numeros(event)" inputmode="numeric" pattern="\d*" maxlength="6">
                 </div>
                 <div class="form-row">
                 <div class="col-md-4 mb-3">

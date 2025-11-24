@@ -15,6 +15,9 @@ $fechexpedicion=isset($_POST['fechexpedicion'])? limpiar($_POST['fechexpedicion'
 $numresolucion=isset($_POST['numresolucion'])? limpiar($_POST['numresolucion']): "";
 $nombrecomercial=isset($_POST['nombrecomercial'])? limpiar($_POST['nombrecomercial']): "";
 
+// Nuevo campo: nivel de riesgo
+$nivel_riesgo = isset($_POST['nivel_riesgo']) ? limpiar($_POST['nivel_riesgo']) : "";
+
 $nombresLi=isset($_POST['nombresLi'])? limpiar($_POST['nombresLi']): "";
 $apellidopli=isset($_POST['apellidopli'])? limpiar($_POST['apellidopli']): "";
 $apellidomli=isset($_POST['apellidomli'])? limpiar($_POST['apellidomli']): "";
@@ -100,13 +103,14 @@ case 'insertar':
 	$data.="- Número de Recibo de Tesorería: ".$recibotes.PHP_EOL;
 	$data.="- Fecha de Expedición: ".$fechexpedicion.PHP_EOL;
 	$data.="- Tipo de Licencia: ".($tipolicencia=='1' ? "Indeterminado" : "Temporal").PHP_EOL;
-	$data.="- Número de Resolución Licencia: N° ".$numresolucion."-2025-GDET-MPCH".PHP_EOL;
+	$data.="- Número de Resolución Licencia: N° ".$numresolucion."-".date('Y')."-MDCH-GDET".PHP_EOL;
 	$data.="- Fecha de Expedición de Licencia: ".$fechingreso.PHP_EOL;
     $vigencia_text = ($tipolicencia=='1' || $vigencia === "" || $vigencia === "0001-01-01") ? "Indeterminado" : $vigencia;
     $data .= "- Vigencia de Licencia: " . $vigencia_text . PHP_EOL;
 	$data.="- Estado de Licencia: ACTIVO".PHP_EOL.PHP_EOL;
 	$data.="DETALLES ITSE:".PHP_EOL;
-	$data.="- Número de Resolución ITSE: N° ".$numresolucion_itse."-2025-GDE-ODC-MPCH".PHP_EOL;
+	$data.="- Número de Resolución ITSE: N° ".$numresolucion_itse."-".date('Y')."-MDCH-GDE-ODC".PHP_EOL;
+	$data.="- Nivel de Riesgo: ".$nivel_riesgo.PHP_EOL;
 	$data.="- Fecha de Expedición ITSE: ".$expedicion_itse.PHP_EOL;
 	$data.="- Fecha de Vigencia ITSE: ".$vigencia_itse.PHP_EOL;
 	$data.="- Estado ITSE: ACTIVO".PHP_EOL;
@@ -127,7 +131,7 @@ case 'insertar':
     }
 
 
-		$inserta = $Tramite->insertartramite($expediente, $nombres, $giro, $nombrecomercial,$recibotes, $numresolucion, $vigencia,$fechingreso, $fechexpedicion, $qr, $tipolicencia,$numdoc, $numresolucion_itse, $expedicion_itse, $vigencia_itse); // Agregar el nuevo campo al método insertartramite
+		$inserta = $Tramite->insertartramite($expediente, $nombres, $giro, $nombrecomercial,$recibotes, $numresolucion, $vigencia,$fechingreso, $fechexpedicion, $qr, $tipolicencia,$numdoc, $numresolucion_itse, $expedicion_itse, $vigencia_itse, $nivel_riesgo); // Agregar el nuevo campo al método insertartramite
 		
         if ($inserta) {
             echo "1";
@@ -167,13 +171,13 @@ case 'editar':
 		$data.="- Número de Recibo de Tesorería: ".$recibotes.PHP_EOL;
 		$data.="- Fecha de Expedición: ".$fechexpedicion.PHP_EOL;
 		$data.="- Tipo de Licencia: ".($tipolicencia=='1' ? "Indeterminado" : "Temporal").PHP_EOL;
-		$data.="- Número de Resolución Licencia: N° ".$numresolucion."-2025-GDET-MPCH".PHP_EOL;
+		$data.="- Número de Resolución Licencia: N° ".$numresolucion."-".date('Y')."-MDCH-GDET".PHP_EOL;
 		$data.="- Fecha de Expedición de Licencia: ".$fechingreso.PHP_EOL;
         $vigencia_text = ($tipolicencia=='1' || $vigencia === "" || $vigencia === "0001-01-01") ? "Indeterminado" : $vigencia;
         $data .= "- Vigencia de Licencia: " . $vigencia_text . PHP_EOL;
 		$data.="- Estado de Licencia: ".($estado=='1' ? "Activo" : "Inactivo").PHP_EOL.PHP_EOL;
 		$data.="DETALLES ITSE:".PHP_EOL;
-		$data.="- Número de Resolución ITSE: N° ".$numresolucion_itse."-2025-GDE-ODC-MPCH".PHP_EOL;
+		$data.="- Número de Resolución ITSE: N° ".$numresolucion_itse."-".date('Y')."-MDCH-GDE-ODC".PHP_EOL;
 		$data.="- Fecha de Expedición ITSE: ".$expedicion_itse.PHP_EOL;
 		$data.="- Fecha de Vigencia ITSE: ".$vigencia_itse.PHP_EOL;
 		$data.="- Estado ITSE: ".($estado_itse=='1' ? "Activo" : "Inactivo").PHP_EOL;
@@ -192,7 +196,7 @@ case 'editar':
         }
 
 
-		$edita = $Tramite->editartramite($idtramite, $expediente, $nombres, $giro, $recibotes, $vigencia, $fechingreso, $fechexpedicion, $numresolucion, $nombrecomercial, $estado, $tipolicencia, $numdoc, $numresolucion_itse, $estado_itse, $expedicion_itse, $vigencia_itse); // Agregar el nuevo campo al método editartramite
+		$edita = $Tramite->editartramite($idtramite, $expediente, $nombres, $giro, $recibotes, $vigencia, $fechingreso, $fechexpedicion, $numresolucion, $nombrecomercial, $estado, $tipolicencia, $numdoc, $numresolucion_itse, $estado_itse, $expedicion_itse, $vigencia_itse, $nivel_riesgo); // Agregar el nuevo campo al método editartramite
         if ($edita) {
             echo "1";
         } else {
