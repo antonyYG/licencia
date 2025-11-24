@@ -1,0 +1,26 @@
+REQUERIMIENTOS Y CAMBIOS REALIZADOS EN EL PROYECTO LICENCIA3
+
+2. **Agregar Botón de Eliminar en Giros**
+   - **Descripción**: Agregado de un botón para eliminar giros en la tabla de giros.
+   - **Archivos Modificados**:
+     - view/giros.php: Agregado el botón de eliminar en la columna correspondiente de la tabla (similar al botón editar: <button type="button" class="btn btn-primary btn-raised editar btn-sm"><i class="zmdi zmdi-edit"></i></button>).
+
+3. **Cerrar Modal Después de Agregar Giro**
+   - **Descripción**: Modificación para que el modal de agregar giro se cierre automáticamente después de registrar exitosamente.
+   - **Archivos Modificados**:
+     - view/script/giro.js: Agregado $("#exampleModal").modal("hide"); en el callback de éxito del AJAX para insertar giro.
+
+4. **Generación Dinámica de QR en PDF de Licencias**
+   - **Descripción**: Modificación del QR en los PDFs para mostrar únicamente información específica: Número de Expediente, Otorgado a, Número de RUC, Establecimiento ubicado en, Giro o Comercio, Vigencia, Estado, Número de Resolución, Número de Resolución ITSE.
+   - **Archivos Modificados**:
+     - public/pdf/tramitelicencia.php: Agregado código para construir el contenido del QR con los campos solicitados, generar el QR temporalmente usando phpqrcode, y eliminar el archivo temporal después de usarlo. Reemplazado el uso del QR estático por el dinámico.
+
+5. **Habilitación de Extensión GD en PHP**
+   - **Descripción**: Solución al error "Call to undefined function ImageCreate()" habilitando la extensión GD en php.ini para permitir la generación de imágenes QR.
+   - **Archivos Modificados**:
+     - C:\xampp\php\php.ini: Cambiado ";extension=gd" a "extension=gd" y reiniciado Apache.
+
+NOTAS ADICIONALES:
+- Todos los cambios han sido implementados siguiendo las mejores prácticas de código y compatibilidad con el proyecto existente.
+- Se recomienda probar las funcionalidades en un entorno de desarrollo antes de desplegar en producción.
+- Para cualquier modificación adicional, consultar los archivos mencionados.

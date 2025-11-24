@@ -1,0 +1,5 @@
+- [x] Agregar columna "Eliminar" en el encabezado de la tabla en view/tienda.php
+- [x] En controller/tienda.php, agregar botón de eliminar en caso 'lista' y nuevo caso 'eliminar'
+- [x] Agregar método eliminar en model/Tienda.php con verificación de dependencias
+- [x] En view/script/tienda.js, agregar columna 'elimina' y manejador de clic con mensaje de dependencias
+- [ ] Probar funcionalidad de eliminar
