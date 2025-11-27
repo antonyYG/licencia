@@ -32,6 +32,7 @@ $numresolucion_itse = isset($_POST['numresolucion_itse']) ? limpiar($_POST['numr
 $estado_itse=isset($_POST['estado_itse'])? limpiar($_POST['estado_itse']): "";
 $expedicion_itse = isset($_POST['expedicionitse']) ? limpiar($_POST['expedicionitse']) : "";
 $vigencia_itse = isset($_POST['vigenciaitse']) ? limpiar($_POST['vigenciaitse']) : "";
+$nivel_riesgo = isset($_POST['nivelriesgo']) ? limpiar($_POST['nivelriesgo']) : "";
 
 
 switch ($_GET['boton']) {
@@ -127,7 +128,7 @@ case 'insertar':
     }
 
 
-		$inserta = $Tramite->insertartramite($expediente, $nombres, $giro, $nombrecomercial,$recibotes, $numresolucion, $vigencia,$fechingreso, $fechexpedicion, $qr, $tipolicencia,$numdoc, $numresolucion_itse, $expedicion_itse, $vigencia_itse); // Agregar el nuevo campo al método insertartramite
+		$inserta = $Tramite->insertartramite($expediente, $nombres, $giro, $nombrecomercial,$recibotes, $numresolucion, $vigencia,$fechingreso, $fechexpedicion, $qr, $tipolicencia,$numdoc, $numresolucion_itse, $expedicion_itse, $vigencia_itse, $nivel_riesgo); // Agregar el nuevo campo al método insertartramite
 		
         if ($inserta) {
             echo "1";
@@ -192,7 +193,7 @@ case 'editar':
         }
 
 
-		$edita = $Tramite->editartramite($idtramite, $expediente, $nombres, $giro, $recibotes, $vigencia, $fechingreso, $fechexpedicion, $numresolucion, $nombrecomercial, $estado, $tipolicencia, $numdoc, $numresolucion_itse, $estado_itse, $expedicion_itse, $vigencia_itse); // Agregar el nuevo campo al método editartramite
+		$edita = $Tramite->editartramite($idtramite, $expediente, $nombres, $giro, $recibotes, $vigencia, $fechingreso, $fechexpedicion, $numresolucion, $nombrecomercial, $estado, $tipolicencia, $numdoc, $numresolucion_itse, $estado_itse, $expedicion_itse, $vigencia_itse, $nivel_riesgo); // Agregar el nuevo campo al método editartramite
         if ($edita) {
             echo "1";
         } else {

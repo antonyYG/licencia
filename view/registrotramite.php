@@ -157,6 +157,14 @@
 							<label for="validationTooltip03" style="color: black">Vigencia ITSE</label>
                             <input type="date" class="form-control" id="vigenciaitse" name="vigenciaitse">
 						</div>
+						<div class="col-md-4 mb-3">
+							<label for="validationTooltip03" style="color: black">Nivel de Riesgo</label>
+							<select name="nivelriesgo" id="nivelriesgo" class="form-control">
+								<option value="">Seleccionar Nivel</option>
+								<option value="moderado">Moderado</option>
+								<option value="alto riesgo">Alto Riesgo</option>
+							</select>
+						</div>
 					</div>
 					
 					<hr width="100%" style="opacity: .1">

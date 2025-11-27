@@ -17,11 +17,11 @@ class RegistroTramite extends conexion
 		return $sql;
 	}
 
-	public function insertartramite($expediente, $nombres, $giro, $nombrecomercial, $recibotes, $numresolucion, $vigencia, $fechingreso, $fechexpedicion, $qr, $tipolicencia, $numdoc, $numresolucion_itse, $expedicion_itse, $vigencia_itse){
+	public function insertartramite($expediente, $nombres, $giro, $nombrecomercial, $recibotes, $numresolucion, $vigencia, $fechingreso, $fechexpedicion, $qr, $tipolicencia, $numdoc, $numresolucion_itse, $expedicion_itse, $vigencia_itse, $nivel_riesgo){
     $con = parent::conectar();
     // Manejo de vigencia: permitir NULL cuando es indeterminada
     $vig = (empty($vigencia) || $vigencia === '0001-01-01') ? 'NULL' : "'$vigencia'";
-    $sql = "INSERT INTO `licencia`(`exp_num`, `idtienda`, `idgiro`, `nombre_comercial`, `numrecibo_tesoreria`, `num_resolucion`, `vigencia_lic`, `fecha_ingreso`, `fecha_expedicion`, `qr`, `tipo_lic`, `num_tipolic`, `NumResITSE`, `expedicionITSE`, `vigenciaITSE` ) VALUES ('$expediente', '$nombres', '$giro', '$nombrecomercial', '$recibotes', '$numresolucion', $vig, '$fechingreso', '$fechexpedicion', '$qr', '$tipolicencia', '$numdoc', '$numresolucion_itse', '$expedicion_itse', '$vigencia_itse')";
+    $sql = "INSERT INTO `licencia`(`exp_num`, `idtienda`, `idgiro`, `nombre_comercial`, `numrecibo_tesoreria`, `num_resolucion`, `vigencia_lic`, `fecha_ingreso`, `fecha_expedicion`, `qr`, `tipo_lic`, `num_tipolic`, `NumResITSE`, `expedicionITSE`, `vigenciaITSE`, `nivel_riesgo` ) VALUES ('$expediente', '$nombres', '$giro', '$nombrecomercial', '$recibotes', '$numresolucion', $vig, '$fechingreso', '$fechexpedicion', '$qr', '$tipolicencia', '$numdoc', '$numresolucion_itse', '$expedicion_itse', '$vigencia_itse', '$nivel_riesgo')";
     $inserta = mysqli_query($con, $sql);
     if ($inserta) {
         return true;
@@ -31,10 +31,10 @@ class RegistroTramite extends conexion
     }
 }
 
-	public function editartramite($idtramite, $expediente, $nombres, $giro, $recibotes, $vigencia, $fechingreso, $fechexpedicion, $numresolucion, $nombrecomercial, $estado, $tipolicencia, $numdoc, $numresolucion_itse, $estado_itse, $expedicion_itse, $vigencia_itse){
+	public function editartramite($idtramite, $expediente, $nombres, $giro, $recibotes, $vigencia, $fechingreso, $fechexpedicion, $numresolucion, $nombrecomercial, $estado, $tipolicencia, $numdoc, $numresolucion_itse, $estado_itse, $expedicion_itse, $vigencia_itse, $nivel_riesgo){
     $con = parent::conectar();
     $vig = (empty($vigencia) || $vigencia === '0001-01-01') ? 'NULL' : "'$vigencia'";
-    $query = "UPDATE `licencia` SET `exp_num`='$expediente', `idtienda`='$nombres', `idgiro`='$giro', `nombre_comercial`='$nombrecomercial', `numrecibo_tesoreria`='$recibotes', `num_resolucion`='$numresolucion', `vigencia_lic`=$vig, `fecha_ingreso`='$fechingreso', `fecha_expedicion`='$fechexpedicion', `condicion`='$estado', `tipo_lic`='$tipolicencia', `num_tipolic`='$numdoc', `NumResITSE`='$numresolucion_itse', EstadoITSE='$estado_itse', expedicionITSE='$expedicion_itse', vigenciaITSE='$vigencia_itse' WHERE `idlicencia`='$idtramite'";
+    $query = "UPDATE `licencia` SET `exp_num`='$expediente', `idtienda`='$nombres', `idgiro`='$giro', `nombre_comercial`='$nombrecomercial', `numrecibo_tesoreria`='$recibotes', `num_resolucion`='$numresolucion', `vigencia_lic`=$vig, `fecha_ingreso`='$fechingreso', `fecha_expedicion`='$fechexpedicion', `condicion`='$estado', `tipo_lic`='$tipolicencia', `num_tipolic`='$numdoc', `NumResITSE`='$numresolucion_itse', EstadoITSE='$estado_itse', expedicionITSE='$expedicion_itse', vigenciaITSE='$vigencia_itse', nivel_riesgo='$nivel_riesgo' WHERE `idlicencia`='$idtramite'";
     $sql = mysqli_query($con, $query);
     if ($sql) {
         return true;

@@ -78,7 +78,7 @@ $pdf->SetFont('Arial','B',15);
 $pdf->SetXY(60,90);
 $pdf->SetTextColor(255,255,255); // color del texto
 //$pdf->SetFillColor(255,0,0); // relleno de la celda
-$pdf->Cell(90,6,utf8_decode('N° '.$resulta['num_tipolic'].'-'.date('Y').'-GDE-MDCH'),0,1,'C',$pdf->Image('../../files/img/relleno.jpg', 57, 89,96,8)); 
+$pdf->Cell(90,6,utf8_decode('N° '.$resulta['num_tipolic'].'-'.date('Y').'-MDCH/GDEYT-SGC'),0,1,'C',$pdf->Image('../../files/img/relleno.jpg', 57, 89,96,8)); 
 
 $pdf->SetTextColor(0,0,0);
 $pdf->SetXY(85,102);

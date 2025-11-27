@@ -1,4 +1,4 @@
-<?php
+ <?php
 session_start();
 if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
     echo "Debe ingresar al sistema correctamente";
@@ -9,7 +9,7 @@ if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
     $conexion = $con->conectar();
     $idtramite = $_GET['idtramite'];
 
-    $tramite = mysqli_query($conexion, "SELECT l.idlicencia,l.exp_num,l.idtienda,t.numruc,t.nombres_per,t.apellidop_per,t.apellidom_per,t.ubic_tienda,t.area_tienda,l.idgiro,g.nombregiro,l.nombre_comercial,l.numrecibo_tesoreria,l.num_resolucion,l.vigencia_lic,l.fecha_ingreso,l.fecha_expedicion,l.qr,l.condicion,l.tipo_lic,l.num_tipolic,l.NumResITSE,l.expedicionITSE,l.vigenciaITSE FROM `licencia` l INNER JOIN tienda t ON l.idtienda = t.idtienda
+    $tramite = mysqli_query($conexion, "SELECT l.idlicencia,l.exp_num,l.idtienda,t.numruc,t.nombres_per,t.apellidop_per,t.apellidom_per,t.ubic_tienda,t.area_tienda,l.idgiro,g.nombregiro,l.nombre_comercial,l.numrecibo_tesoreria,l.num_resolucion,l.vigencia_lic,l.fecha_ingreso,l.fecha_expedicion,l.qr,l.condicion,l.tipo_lic,l.num_tipolic,l.NumResITSE,l.expedicionITSE,l.vigenciaITSE,l.nivel_riesgo FROM `licencia` l INNER JOIN tienda t ON l.idtienda = t.idtienda
                 INNER JOIN giro g ON l.idgiro = g.idgiro WHERE l.exp_num='$idtramite' limit 1");
     $resulta = mysqli_fetch_array($tramite);
 
@@ -33,7 +33,7 @@ if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
     $pdf->SetFont('Arial', 'B', 15);
     $pdf->SetXY(60, 90);
     $pdf->SetTextColor(255, 255, 255);
-    $pdf->Cell(90, 6, utf8_decode('N° ' . $resulta['NumResITSE'] . '-' . date('Y') . '-GDE-ODC-MPCH'), 0, 1, 'C', $pdf->Image('../../files/img/relleno.jpg', 57, 89, 96, 8));
+    $pdf->Cell(90, 6, utf8_decode('N° ' . $resulta['NumResITSE'] . '-' . date('Y') . '-MDCH/GDEYT-ODC'), 0, 1, 'C', $pdf->Image('../../files/img/relleno.jpg', 57, 89, 96, 8));
 
     // Otorgado a
     $pdf->SetTextColor(0, 0, 0);
@@ -80,6 +80,12 @@ if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
     $pdf->Cell(100, 5, utf8_decode(': ' . $resulta['expedicionITSE']), 0, 1, 'L');
     $pdf->SetXY(80, 190);
     $pdf->Cell(100, 5, utf8_decode(': ' . $resulta['vigenciaITSE']), 0, 1, 'L');
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->SetXY(30, 200);
+    $pdf->Cell(50, 5, utf8_decode('NIVEL DE RIESGO:'), 0, 1, 'L');
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->SetXY(80, 200);
+    $pdf->Cell(100, 5, utf8_decode(': ' . $resulta['nivel_riesgo']), 0, 1, 'L');
 
     // Fecha de emisión
     $pdf->SetXY(30, 210);
