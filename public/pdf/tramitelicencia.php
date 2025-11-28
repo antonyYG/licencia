@@ -39,6 +39,7 @@ $tramite = mysqli_query($conexion, "
         l.tipo_lic,
         l.num_tipolic,
         l.NumResITSE,
+        l.EstadoITSE,
         l.expedicionITSE,
         l.vigenciaITSE
         ,l.nivel_riesgo
@@ -79,7 +80,7 @@ $pdf->SetFont('Arial','B',15);
 $pdf->SetXY(60,90);
 $pdf->SetTextColor(255,255,255); // color del texto
 //$pdf->SetFillColor(255,0,0); // relleno de la celda
-$pdf->Cell(90,6,utf8_decode('N° '.$resulta['num_tipolic'].'-'.date('Y').'-MDCH-GDET'),0,1,'C',$pdf->Image('../../files/img/relleno.jpg', 57, 89,96,8)); 
+$pdf->Cell(90,6,utf8_decode('N° '.$resulta['num_tipolic'].'-'.date('Y').'-MDCH/GDEYT-SGC'),0,1,'C',$pdf->Image('../../files/img/relleno.jpg', 57, 89,96,8)); 
 
 $pdf->SetTextColor(0,0,0);
 $pdf->SetXY(85,102);
@@ -151,7 +152,7 @@ $pdf->Cell(96,4,utf8_decode(': '.$resulta['area_tienda']),0,1,'L');
 $pdf->SetXY(84,171);
 $pdf->Cell(96,4,utf8_decode(': '.$resulta['numrecibo_tesoreria']),0,1,'L');
 $pdf->SetXY(84,181);
-$pdf->Cell(96,4,utf8_decode(': N° '.$resulta['num_resolucion'].'-'.date('Y').'-MDCH-GDET'),0,1,'L');
+$pdf->Cell(96,4,utf8_decode(': N° '.$resulta['num_resolucion'].'-'.date('Y').'-MDCH/GDEYT-SGC'),0,1,'L');
 $pdf->SetXY(84,186);
 $pdf->Cell(96,4,utf8_decode(': '.$resulta['fecha_ingreso']),0,1,'L');
 $pdf->SetXY(84,191);
@@ -197,7 +198,7 @@ if ($dias_restantes > 0) {
 }
 
 $pdf->SetXY(84,196);
-$pdf->Cell(90,4,utf8_decode(': N° '.$resulta['NumResITSE'].'-'.date('Y').'-MDCH-GDE-ODC'),0,1,'L');
+$pdf->Cell(90,4,utf8_decode(': N° '.$resulta['NumResITSE'].'-'.date('Y').'-MDCH/GDEYT-ODC'),0,1,'L');
 
 $pdf->SetXY(84,201);
 $pdf->Cell(90,4,utf8_decode(': '.$resulta['expedicionITSE']),0,1,'L');
@@ -236,7 +237,45 @@ $fecha_actual = strftime("Chilca, " . '%d de %B del %Y');
 $fecha_actual = strtr($fecha_actual, $meses);
 $pdf->Cell(52, 4, utf8_decode($fecha_actual), 0, 0, 'L');
 
-	$pdf->Image('../../files/qr/'.$resulta['qr'], 162,233,32);
+    $qrDir = __DIR__ . '/../../files/qr/';
+    if (!is_dir($qrDir)) { @mkdir($qrDir, 0755, true); }
+
+    // Generar contenido del QR que debe coincidir con lo mostrado en la vista de consulta
+    $qrData  = "N° Doc: " . ($resulta['num_tipolic'] ?? '-') . "\n";
+    $qrData .= "Otorgado a: " . trim(($resulta['nombres_per'] ?? '') . ' ' . ($resulta['apellidop_per'] ?? '') . ' ' . ($resulta['apellidom_per'] ?? '')) . "\n";
+    $qrData .= "Expediente: " . ($resulta['exp_num'] ?? '-') . "\n";
+    $qrData .= "N° RUC: " . ($resulta['numruc'] ?? '-') . "\n";
+    $qrData .= "Establecimiento: " . ($resulta['ubic_tienda'] ?? '-') . "\n";
+    $qrData .= "Giro: " . ($resulta['nombregiro'] ?? '-') . "\n";
+    $qrData .= "Nombre Comercial: " . ($resulta['nombre_comercial'] ?? '-') . "\n";
+    $qrData .= "Área: " . ($resulta['area_tienda'] ?? '-') . "\n";
+    $qrData .= "N° Recibo: " . ($resulta['numrecibo_tesoreria'] ?? '-') . "\n";
+    $qrData .= "Fecha de Expedición: " . ($resulta['fecha_ingreso'] ?? '-') . "\n";
+    $qrData .= "Vigencia: ";
+    if (isset($resulta['tipo_lic']) && $resulta['tipo_lic'] == '1') { $qrData .= 'INDETERMINADA\n'; } else { $qrData .= ((!empty($resulta['vigencia_lic']) && $resulta['vigencia_lic'] !== '0001-01-01') ? $resulta['vigencia_lic'] : '-') . "\n"; }
+    $qrData .= "N° Resolución: " . ($resulta['num_resolucion'] ?? '-') . "\n";
+    $qrData .= "N° Resolución ITSE: " . ($resulta['NumResITSE'] ?? '-') . "\n";
+    $qrData .= "Expedición ITSE: " . ($resulta['expedicionITSE'] ?? '-') . "\n";
+    $qrData .= "Vigencia ITSE: " . ($resulta['vigenciaITSE'] ?? '-') . "\n";
+    $qrData .= "Nivel de Riesgo: " . (!empty($resulta['nivel_riesgo']) ? $resulta['nivel_riesgo'] : 'INDETERMINADA') . "\n";
+    $qrData .= "Estado Licencia: " . (isset($resulta['condicion']) && $resulta['condicion']=='1' ? 'ACTIVO' : 'INACTIVO') . "\n";
+
+    // Generar/actualizar archivo QR (si GD disponible)
+    require_once __DIR__ . '/../../public/phpqrcode/qrlib.php';
+    $qrFilename = ($resulta['exp_num'] ?: 'qr_' . time()) . '.png';
+    $qrPath = $qrDir . $qrFilename;
+    $gd_ok = function_exists('imagecreate') || extension_loaded('gd');
+    if ($gd_ok) {
+        QRcode::png($qrData, $qrPath, 'H', 5, 2);
+    } else {
+        // no GD -> si existe imagen previa la usamos, si no dejamos el que venga
+        if (!file_exists($qrPath) && !empty($resulta['qr']) && file_exists($qrDir . $resulta['qr'])) {
+            $qrPath = $qrDir . $resulta['qr'];
+            $qrFilename = $resulta['qr'];
+        }
+    }
+
+    $pdf->Image('../../files/qr/' . $qrFilename, 162,233,32);
 	//izquierda o derecha/arriba o abajo/tamaño de imagen
 $ruta_pdf = "../../files/licencias/".$resulta['exp_num'].".pdf";
 // Guardar PDF en disco

@@ -16,6 +16,10 @@ $contrasena=isset($_POST['contrasena'])? limpiar($_POST['contrasena']): "";
 $repitecontrasena=isset($_POST['repitecontrasena'])? limpiar($_POST['repitecontrasena']): "";
 $correo=isset($_POST['correo'])? limpiar($_POST['correo']): "";
 $tipoUsuario=isset($_POST['tipo_usuario'])? limpiar($_POST['tipo_usuario']): "";
+// For security and to enforce policy: only 'Administrador' role is allowed via the UI/API.
+if (strtolower($tipoUsuario) !== 'administrador') {
+	$tipoUsuario = 'Administrador';
+}
 
 switch ($_GET['boton']) {
 	case 'listar':

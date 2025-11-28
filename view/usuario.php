@@ -115,8 +115,7 @@
                     fila += '<td>' + usuario.dni + '</td>';
                     fila += '<td>';
                     fila += '<select class="form-control" name="tipoUsuario">';
-                    fila += '<option value="administrador"' + (usuario.tipo_usuario === 'administrador' ? ' selected' : '') + '>Administrador</option>';
-                    fila += '<option value="usuario"' + (usuario.tipo_usuario === 'usuario' ? ' selected' : '') + '>Usuario</option>';
+                    fila += '<option value="administrador"' + (usuario.tipo_usuario === 'administrador' || usuario.tipo_usuario === 'Administrador' ? ' selected' : '') + '>Administrador</option>';
                     fila += '</select>';
                     fila += '</td>';
                     fila += '<td>';
@@ -218,7 +217,6 @@
                   <label for="inputEmail4" style="color: black;">Rol</label>
                   <select class="form-control" id="tipo_usuario" name="tipo_usuario">
                     <option value="Administrador">Administrador</option>
-                    <option value="Usuario">Usuario</option>
                   </select>
                 </div>
               </div>
@@ -289,7 +287,6 @@
                   <label for="inputEmail4" style="color: black;">Rol</label>
                   <select class="form-control" id="tipo_usuarioedit" name="tipo_usuario">
                     <option value="Administrador">Administrador</option>
-                    <option value="Usuario">Usuario</option>
                   </select>
                 </div>
               </div>

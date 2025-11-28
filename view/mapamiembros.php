@@ -175,8 +175,8 @@ $BASE_URL_RESOURCES = getBaseUrlPath($PROJECT_FOLDER_NAME);
                 popupContent += "<span style='color: red; background-color: #F08080; padding: 4px 8px; border-radius: 4px;'>INACTIVO</span>";
             }
 
-            // Botón de imprimir con RUTA ABSOLUTA GENERADA POR PHP
-            popupContent += "</div><br><br><button type='button' class='btn btn-light btn-raised btn-sm' onclick=\"imprimir('<?php echo $BASE_URL_RESOURCES; ?>public/pdf/tramitelicencia.php?idtramite=" + expNum + "','1200', '500')\"><i class='zmdi zmdi-print'></i></button>";
+            // Se removió el botón de imprimir del popup (solicitud del usuario)
+            popupContent += "</div><br><br>";
 
             var tiendaIcon = L.AwesomeMarkers.icon({
                 icon: 'shopping-cart',
