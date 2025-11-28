@@ -240,25 +240,32 @@ $pdf->Cell(52, 4, utf8_decode($fecha_actual), 0, 0, 'L');
     $qrDir = __DIR__ . '/../../files/qr/';
     if (!is_dir($qrDir)) { @mkdir($qrDir, 0755, true); }
 
-    // Generar contenido del QR que debe coincidir con lo mostrado en la vista de consulta
-    $qrData  = "N° Doc: " . ($resulta['num_tipolic'] ?? '-') . "\n";
-    $qrData .= "Otorgado a: " . trim(($resulta['nombres_per'] ?? '') . ' ' . ($resulta['apellidop_per'] ?? '') . ' ' . ($resulta['apellidom_per'] ?? '')) . "\n";
-    $qrData .= "Expediente: " . ($resulta['exp_num'] ?? '-') . "\n";
-    $qrData .= "N° RUC: " . ($resulta['numruc'] ?? '-') . "\n";
-    $qrData .= "Establecimiento: " . ($resulta['ubic_tienda'] ?? '-') . "\n";
-    $qrData .= "Giro: " . ($resulta['nombregiro'] ?? '-') . "\n";
-    $qrData .= "Nombre Comercial: " . ($resulta['nombre_comercial'] ?? '-') . "\n";
-    $qrData .= "Área: " . ($resulta['area_tienda'] ?? '-') . "\n";
-    $qrData .= "N° Recibo: " . ($resulta['numrecibo_tesoreria'] ?? '-') . "\n";
-    $qrData .= "Fecha de Expedición: " . ($resulta['fecha_ingreso'] ?? '-') . "\n";
-    $qrData .= "Vigencia: ";
-    if (isset($resulta['tipo_lic']) && $resulta['tipo_lic'] == '1') { $qrData .= 'INDETERMINADA\n'; } else { $qrData .= ((!empty($resulta['vigencia_lic']) && $resulta['vigencia_lic'] !== '0001-01-01') ? $resulta['vigencia_lic'] : '-') . "\n"; }
-    $qrData .= "N° Resolución: " . ($resulta['num_resolucion'] ?? '-') . "\n";
-    $qrData .= "N° Resolución ITSE: " . ($resulta['NumResITSE'] ?? '-') . "\n";
-    $qrData .= "Expedición ITSE: " . ($resulta['expedicionITSE'] ?? '-') . "\n";
-    $qrData .= "Vigencia ITSE: " . ($resulta['vigenciaITSE'] ?? '-') . "\n";
-    $qrData .= "Nivel de Riesgo: " . (!empty($resulta['nivel_riesgo']) ? $resulta['nivel_riesgo'] : 'INDETERMINADA') . "\n";
-    $qrData .= "Estado Licencia: " . (isset($resulta['condicion']) && $resulta['condicion']=='1' ? 'ACTIVO' : 'INACTIVO') . "\n";
+    // Generar contenido del QR con formato elegante (encabezado + detalles)
+    $qrTitle = 'LICENCIA DE FUNCIONAMIENTO';
+    $otorgado = trim(($resulta['nombres_per'] ?? '') . ' ' . ($resulta['apellidop_per'] ?? '') . ' ' . ($resulta['apellidom_per'] ?? '')) ?: '-';
+    $vigencia_text = (isset($resulta['tipo_lic']) && $resulta['tipo_lic'] == '1') ? 'INDETERMINADA' : ((!empty($resulta['vigencia_lic']) && $resulta['vigencia_lic'] !== '0001-01-01') ? $resulta['vigencia_lic'] : '-');
+    $qrDataLines = [
+        $qrTitle,
+        str_repeat('=', 24),
+        'DETALLES DEL TRÁMITE:',
+        '- OTORGADO A: ' . $otorgado,
+        '- N° DE RUC: ' . ($resulta['numruc'] ?? '-'),
+        '- ESTABLECIMIENTO UBICADO EN: ' . ($resulta['ubic_tienda'] ?? '-'),
+        '- GIRO O COMERCIO: ' . ($resulta['nombregiro'] ?? '-'),
+        '- NOMBRE COMERCIAL: ' . ($resulta['nombre_comercial'] ?? '-'),
+        '- AREA DEL LOCAL: ' . ($resulta['area_tienda'] ?? '-'),
+        '- N° DE RECIBO DE TESORERIA: ' . ($resulta['numrecibo_tesoreria'] ?? '-'),
+        '- N° DE RESOLUCIÓN DE LICENCIA: ' . ($resulta['num_resolucion'] ? ('N° ' . $resulta['num_resolucion'] . '-' . date('Y') . '-MDCH/GDEYT-SGC') : '-'),
+        '- FECHA DE EXPEDICIÓN DE LICENCIA: ' . ($resulta['fecha_ingreso'] ?? '-'),
+        '- VIGENCIA DE LICENCIA: ' . $vigencia_text,
+        '- N° DE RESOLUCIÓN ITSE: ' . ($resulta['NumResITSE'] ?? '-'),
+        '- FECHA DE EXPEDICIÓN ITSE: ' . ($resulta['expedicionITSE'] ?? '-'),
+        '- FECHA DE VIGENCIA ITSE: ' . ($resulta['vigenciaITSE'] ?? '-'),
+        '- VIGENCIA ITSE: ' . ($resulta['vigenciaITSE'] ?? '-'),
+        '- NIVEL DE RIESGO: ' . (!empty($resulta['nivel_riesgo']) ? $resulta['nivel_riesgo'] : 'INDETERMINADA'),
+        '- ESTADO LICENCIA: ' . ((isset($resulta['condicion']) && $resulta['condicion']=='1') ? 'ACTIVO' : 'INACTIVO')
+    ];
+    $qrData = implode("\n", $qrDataLines) . "\n";
 
     // Generar/actualizar archivo QR (si GD disponible)
     require_once __DIR__ . '/../../public/phpqrcode/qrlib.php';
@@ -277,9 +284,24 @@ $pdf->Cell(52, 4, utf8_decode($fecha_actual), 0, 0, 'L');
 
     $pdf->Image('../../files/qr/' . $qrFilename, 162,233,32);
 	//izquierda o derecha/arriba o abajo/tamaño de imagen
-$ruta_pdf = "../../files/licencias/".$resulta['exp_num'].".pdf";
-// Guardar PDF en disco
-$pdf->Output($ruta_pdf, 'F');
+    // Guardar PDF en disco usando nombre único si ya existe (00001.pdf, 00001_1.pdf, 00001_2.pdf...)
+    $licDir = __DIR__ . '/../../files/licencias/';
+    if (!is_dir($licDir)) { @mkdir($licDir, 0755, true); }
+    $baseName = $resulta['exp_num'] ?: 'lic_' . time();
+    $candidate = $licDir . $baseName . '.pdf';
+    if (!file_exists($candidate)) {
+        // first-time file: keep simple base name
+        $ruta_pdf = $candidate;
+    } else {
+        // generate incremental suffix + date (e.g. 00001_1_23-11-2025.pdf)
+        $i = 1;
+        $datePart = date('d-m-Y');
+        do {
+            $ruta_pdf = $licDir . $baseName . '_' . $i . '_' . $datePart . '.pdf';
+            $i++;
+        } while (file_exists($ruta_pdf));
+    }
+    $pdf->Output($ruta_pdf, 'F');
 
 // Enviar el PDF al navegador (inline) para que el usuario lo vea al hacer click en "Generar Licencia"
 if (file_exists($ruta_pdf)) {
@@ -299,8 +321,8 @@ try {
     $mail->SMTPDebug = 0;
     $mail->Host       = 'smtp.gmail.com'; // agregar host SMTP aquí
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'TU CORREO'; // agregar usuario SMTP aquí
-    $mail->Password   = 'TU CONTRASEÑA'; // agregar contraseña SMTP aquí
+    $mail->Username   = 'cgrupo12@gmail.com'; // agregar usuario SMTP aquí
+    $mail->Password   = 'kmvuxrrpgxtuqhdi'; // agregar contraseña SMTP aquí
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // agregar tipo de encriptación SMTP aquí
     $mail->Port       = 587; // agregar puerto SMTP aquí
 
@@ -316,7 +338,7 @@ try {
     // Correo del ciudadano
     $mail->addAddress($resulta['correo']);  
 
-    $mail->setFrom('TU CORREO', 'Municipalidad Distrital de Chilca');  //NOTA: Cambiar por su correo
+    $mail->setFrom('cgrupo12@gmail.com', 'Municipalidad Distrital de Chilca');  //NOTA: Cambiar por su correo
     $mail->Subject = 'Licencia de Funcionamiento Entregada';
     $mail->isHTML(true);
 

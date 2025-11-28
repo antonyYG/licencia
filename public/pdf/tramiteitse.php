@@ -110,19 +110,25 @@ if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
     $qrDir = __DIR__ . '/../../files/qr/';
     if (!is_dir($qrDir)) { @mkdir($qrDir, 0755, true); }
 
-    // Generar contenido QR consistente con la vista de consulta (misma información)
-    $qrData  = "N° Doc: " . ($resulta['num_tipolic'] ?? '-') . "\n";
-    $qrData .= "Otorgado a: " . trim(($resulta['nombres_per'] ?? '') . ' ' . ($resulta['apellidop_per'] ?? '') . ' ' . ($resulta['apellidom_per'] ?? '')) . "\n";
-    $qrData .= "Expediente: " . ($resulta['exp_num'] ?? '-') . "\n";
-    $qrData .= "N° RUC: " . ($resulta['numruc'] ?? '-') . "\n";
-    $qrData .= "Establecimiento: " . ($resulta['ubic_tienda'] ?? '-') . "\n";
-    $qrData .= "Giro: " . ($resulta['nombregiro'] ?? '-') . "\n";
-    $qrData .= "Nombre Comercial: " . ($resulta['nombre_comercial'] ?? '-') . "\n";
-    $qrData .= "Área: " . ($resulta['area_tienda'] ?? '-') . "\n";
-    $qrData .= "Fecha de Expedición ITSE: " . ($resulta['expedicionITSE'] ?? '-') . "\n";
-    $qrData .= "Vigencia ITSE: " . ($resulta['vigenciaITSE'] ?? '-') . "\n";
-    $qrData .= "Nivel de Riesgo: " . (!empty($resulta['nivel_riesgo']) ? $resulta['nivel_riesgo'] : 'INDETERMINADA') . "\n";
-    $qrData .= "Estado ITSE: " . ((isset($resulta['EstadoITSE']) && $resulta['EstadoITSE'] == '1') ? 'ACTIVO' : 'INACTIVO') . "\n";
+    // Generar contenido QR con formato elegante para ITSE (encabezado + detalles)
+    $qrTitle = 'CERTIFICADO ITSE';
+    $otorgado = trim(($resulta['nombres_per'] ?? '') . ' ' . ($resulta['apellidop_per'] ?? '') . ' ' . ($resulta['apellidom_per'] ?? '')) ?: '-';
+    $qrDataLines = [
+        $qrTitle,
+        str_repeat('=', 24),
+        'DETALLES DEL TRÁMITE:',
+        '- OTORGADO A: ' . $otorgado,
+        '- N° DE RUC: ' . ($resulta['numruc'] ?? '-'),
+        '- ESTABLECIMIENTO UBICADO EN: ' . ($resulta['ubic_tienda'] ?? '-'),
+        '- GIRO O COMERCIO: ' . ($resulta['nombregiro'] ?? '-'),
+        '- NOMBRE COMERCIAL: ' . ($resulta['nombre_comercial'] ?? '-'),
+        '- AREA DEL LOCAL: ' . ($resulta['area_tienda'] ?? '-'),
+        '- FECHA DE EXPEDICIÓN ITSE: ' . ($resulta['expedicionITSE'] ?? '-'),
+        '- FECHA DE VIGENCIA ITSE: ' . ($resulta['vigenciaITSE'] ?? '-'),
+        '- NIVEL DE RIESGO: ' . (!empty($resulta['nivel_riesgo']) ? $resulta['nivel_riesgo'] : 'INDETERMINADA'),
+        '- ESTADO ITSE: ' . ((isset($resulta['EstadoITSE']) && $resulta['EstadoITSE'] == '1') ? 'ACTIVO' : 'INACTIVO')
+    ];
+    $qrData = implode("\n", $qrDataLines) . "\n";
 
     require_once __DIR__ . '/../../public/phpqrcode/qrlib.php';
     $qrFilename = ($resulta['exp_num'] ?: 'itse_qr_' . time()) . '.png';
@@ -140,5 +146,29 @@ if (!isset($_SESSION['nombres']) || empty($_SESSION['nombres'])) {
     // Mover QR  hacia arriba respecto a su posición anterior
     $pdf->Image('../../files/qr/' . $qrFilename, 160, 235, 32);
 
-    $pdf->Output('Certificado_ITSE.pdf', 'I');
+    // Save PDF to files/licencias/ with unique name (exp_num_ITSE.pdf or exp_num_ITSE_1_23-11-2025.pdf)
+    $licDir = __DIR__ . '/../../files/licencias/';
+    if (!is_dir($licDir)) { @mkdir($licDir, 0755, true); }
+    $baseName = ($resulta['exp_num'] ?: 'itse_' . time()) . '_ITSE';
+    $candidate = $licDir . $baseName . '.pdf';
+    if (!file_exists($candidate)) {
+        $ruta_pdf = $candidate;
+    } else {
+        $i = 1;
+        $datePart = date('d-m-Y');
+        do {
+            $ruta_pdf = $licDir . $baseName . '_' . $i . '_' . $datePart . '.pdf';
+            $i++;
+        } while (file_exists($ruta_pdf));
+    }
+    $pdf->Output($ruta_pdf, 'F');
+
+    // Stream saved PDF inline to browser
+    if (file_exists($ruta_pdf)) {
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="' . basename($ruta_pdf) . '"');
+        header('Content-Transfer-Encoding: binary');
+        header('Accept-Ranges: bytes');
+        readfile($ruta_pdf);
+    }
 }
