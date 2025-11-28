@@ -321,8 +321,8 @@ try {
     $mail->SMTPDebug = 0;
     $mail->Host       = 'smtp.gmail.com'; // agregar host SMTP aquí
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'cgrupo12@gmail.com'; // agregar usuario SMTP aquí
-    $mail->Password   = 'kmvuxrrpgxtuqhdi'; // agregar contraseña SMTP aquí
+    $mail->Username   = 'TU CORREO'; // agregar usuario SMTP aquí
+    $mail->Password   = 'TU CONTRASEÑA'; // agregar contraseña SMTP aquí
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // agregar tipo de encriptación SMTP aquí
     $mail->Port       = 587; // agregar puerto SMTP aquí
 
@@ -338,7 +338,7 @@ try {
     // Correo del ciudadano
     $mail->addAddress($resulta['correo']);  
 
-    $mail->setFrom('cgrupo12@gmail.com', 'Municipalidad Distrital de Chilca');  //NOTA: Cambiar por su correo
+    $mail->setFrom('TU CORREO', 'Municipalidad Distrital de Chilca');  //NOTA: Cambiar por su correo
     $mail->Subject = 'Licencia de Funcionamiento Entregada';
     $mail->isHTML(true);
 
